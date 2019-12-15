@@ -1,0 +1,7 @@
+spring:
+#连接到远程配置读取服务类
+  cloud:
+    config:
+      profile: prod
+      uri: http://localhost:9898
+      

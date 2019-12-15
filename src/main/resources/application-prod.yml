@@ -1,0 +1,151 @@
+spring:
+  application:
+    name: work-reporter
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/wreporter_sys?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=true
+    username: bins
+    password: binss
+    #默认的连接池配置
+    hikari:
+      maximum-pool-size: 25
+      minimum-idle: 3
+      connection-timeout: 30000
+      idle-timeout: 30000
+    dbcp2:
+      pool-prepared-statements: true
+      max-open-prepared-statements: 250
+    #阿里 druid 数据连接池配置  
+    druid:
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # wreporter_sys 系统数据库
+      sys:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/wreporter_sys?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=true
+        username: bins
+        password: binss
+      # wreporter_report 工作报告数据库   
+      report:
+        url: jdbc:mysql://localhost:3306/wreporter_report?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=true
+        username: bins
+        password: binss
+     # wreporter_quartz 定时调度任务数据库   
+      quartz:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/wreporter_quartz?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=true
+        username: bins
+        password: binss
+     # 系统 information_schema 数据库。保存着所有数据库表数据和库数据         
+      information:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/information_schema?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=true
+        username: bins
+        password: binss
+  #视图引擎设置
+  freemarker:
+    allow-request-override: false
+    cache: true
+    charset: utf-8
+    content-type: text/html; charset=utf-8
+    suffix: .html
+  resources:
+    static-locations:
+    - classpath:/static/
+          
+  # jpa 配置
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    show-sql: false
+    open-in-view: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    
+  #邮箱配置  
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 1395926989@qq.com
+    password: wqmbhzvaurccigag
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          socketFactory:
+              class: javax.net.ssl.SSLSocketFactory
+  #会话配置
+  session:
+    store-type: none
+    timeout: 600
+  jackson:
+    serialization:
+      indent-output: true
+  quartz:
+    startup-delay: 5s
+    jdbc:
+      initialize-schema: always
+    auto-startup: true
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instance-name:  wrScheduler
+            instance-id: auto
+          # Configure JobStore 作业存储配置  
+          job-store:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX #持久化配置
+            driver-delegate-class: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            table-prefix: QRTZ_  #数据库中quartz表的表名前缀
+            is-clustered: false  #是否使用集群
+            misfire-threshold: 5000
+          # 调度器线程池配置  
+          thread-pool:
+            class: org.quartz.simpl.SimpleThreadPool
+            thread-count: 20   # 指定多少个工作者线程被创建用来处理 Job
+            thread-priority: 5 # 设置工作者线程的优先级（最大值10，最小值1，常用值5）         
+      
+  # 文件上传配置
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 100MB
+      file-size-threshold: 1MB
+      location: upload/files        
+server:
+  port: 7777
+# 日志配置
+logging:
+  file:
+    path: logs/work-reporter.log
+
+##自定义的属性，表示测试的TestController是否可用    
+web:
+  test-controller:
+    enable: true
+    
+#暴露端点
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include:
+        - '*'
+        
+#社交登录
+social:
+  qq: 
+    appId: 101833743
+    appSecret: 0b2cea85c69c3a87d7fb2fa9784ced18

@@ -1,0 +1,41 @@
+<div class="layui-logo" style="color: #fff;">
+	<b>工作云报告</b>
+</div>
+<ul class="layui-nav layui-layout-right top_menu">
+	<li class="layui-nav-item">
+		<a href="javascript:;">
+			<#if avatarUrl??>
+				<img src="${avatarUrl}" class="layui-nav-img">
+			<#else>
+				<img src="/img/tx.jpg" class="layui-nav-img">
+
+			</#if>
+		</a>
+		<dl class="layui-nav-child">
+			<dd>
+				<a href="javascript:;" data-url="">
+					<i class="iconfont icon-gerenziliao" data-url="/user/info.html"data-icon="icon-gerenziliao"></i>
+					<cite>个人资料</cite>
+				</a>
+			</dd>
+			<dd>
+				<a href="javascript:;" data-url="/account/renew-password.html" id="pass">
+					<i class="iconfont icon-sanhang" data-icon="icon-xiugaimima"></i>
+					<cite>修改密码</cite>
+				</a>
+			</dd>
+			<dd>
+				<a href="/logout">
+					<i class="iconfont icon-tuichu"></i>
+					<cite>注销</cite>
+				</a>
+			</dd>
+		</dl>
+	</li>
+	<li class="layui-nav-item">
+		<a href="/logout">
+			<i class="iconfont icon-tuichu1"></i>
+			退出
+		</a>
+	</li>
+</ul>

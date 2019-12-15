@@ -1,0 +1,99 @@
+<html>
+<head>
+<#include "/common/common2.ftl"/>
+</head>
+<body>
+	<div id="rrapp" v-cloak>
+		<div class="m-b-md">
+			<form class="layui-form-layui-form-pane" role="form" id="searchForm"
+				name="searchForm">
+				<div class="layui-form-item">
+					<label class="layui-form-label"> 表: </label>
+					<div class="layui-input-inline">
+						<input class="layui-input" id="tableName" name="tableName">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"> 数据库名: </label>
+					<div class="layui-input-inline">
+						<select class="layui-input" id="schemaName" name="schemaName">
+							<option v-for=" item in database " :value="item.dbName">
+								{{item.description}}
+							</option>
+
+						</select>
+					</div>
+					<a href="javascript:void(0)" class="layui-btn layui-btn-normal"
+						@click="query">查询</a> <a href="javascript:void(0)"
+						@click="addConfig" class="layui-btn layui-btn-warm" id="search">修改设置</a>
+					<a type="button" class="layui-btn layui-btn-danger"
+						@click="gencode">生成代码</a>
+				</div>
+			</form>
+		</div>
+		<div class="table-responsive" v-show="showList">
+			<table class="layui-hide" id="gentable"></table>
+		</div>
+		<div v-show="!showList" class="panel panel-default">
+			<div class="panel-heading">{{title}}</div>
+			<form class="layui-form-layui-form-pane" action="javascript:void(0)" id="genForm">
+				<div class="layui-form-item">
+					<label class="layui-form-label">包名</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" v-model="javapackage"
+							placeholder="" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">表前缀</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" v-model="tablePrefix"
+							placeholder="" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">注释邮箱</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" v-model="email"
+							placeholder="" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">注释作者</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" v-model="author"
+							placeholder="" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">访问前缀</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" v-model="pathName"
+							placeholder="" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">框架风格</label>
+					<div class="layui-input-block">
+						<select v-model="styleId" class="layui-input" required>
+								<option v-for=" item in allstyle" :value="item.id">
+									{{item.name}}</option>
+
+						</select>
+					</div>
+				</div>
+				<footer class="panel-footer text-right bg-light lter">
+					<div class="layui-form-item">
+							<!-- @click="saveOrUpdate"  -->
+						<input type="submit" class="layui-btn layui-btn-normal"
+							value="确定" /> &nbsp;&nbsp; <input
+							type="button" class="layui-btn layui-btn-danger" @click="reload"
+							value="返回" />
+					</div>
+				</footer>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript" src="/js/system/gen/gen.js"></script>
+</body>
+</html>

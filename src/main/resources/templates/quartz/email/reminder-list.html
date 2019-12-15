@@ -1,0 +1,83 @@
+<head>
+<#include "/common/common2.ftl"/>
+</head>
+<body>
+	<div id="rrapp" v-cloak>
+		<div v-show="showList">
+			<!-- <div class="m-b-md">
+				 <form class="layui-form-layui-form-pane" role="form" id="searchForm" name="searchForm">
+					<div class="layui-form-item">
+						<label class="layui-form-label"> 邮箱: </label>
+						<div class="layui-input-inline">
+							<input class="layui-input" id="email" name="email">
+						</div>
+						<a href="javascript:void(0)" class="layui-btn layui-btn-normal" @click="query" id="search">查询</a>
+					</div>
+				</form>
+			</div> -->
+			<header class="panel-heading">
+				<div class="doc-buttons">
+					<a class="layui-btn layui-btn-normal" @click="update">
+						<i class="fa fa-pencil-square-o"></i>
+						&nbsp;修改
+					</a>
+					<a class="layui-btn layui-btn-normal" @click="del">
+						<i class="fa fa-trash-o"></i>
+						&nbsp;删除
+					</a>
+					<a class="layui-btn layui-btn-normal" @click="pause">
+						<i class="fa fa-pause"></i>
+						&nbsp;暂停
+					</a>
+					<a class="layui-btn layui-btn-normal" @click="resume">
+						<i class="fa fa-play"></i>
+						&nbsp;恢复
+					</a>
+					<a class="layui-btn layui-btn-normal" @click="runOnce">
+						<i class="fa fa-arrow-circle-right"></i>
+						&nbsp;立即执行
+					</a>
+				</div>
+			</header>
+			<div class="table-responsive">
+				<table class="layui-hide" id="reminderTable"></table>
+			</div>
+		</div>
+		<div v-show="!showList" class="panel panel-default">
+			<div class="panel-heading">{{title}}</div>
+			<form class="" id="reminder-form" method="post" 
+			action="javascript:void(0)" enctype="multipart/form-data">
+	          <div class="layui-form-item">
+					<label class="layui-form-label">发送邮箱</label>
+					<div class="layui-input-block">
+						<input type="email" class="layui-input" required
+						v-model="mailSender.sendTo" placeholder="需要发送到的邮箱" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">发送标题</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" required
+						v-model="mailSender.title" placeholder="发送邮件的标题" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">发送内容</label>
+					<div class="layui-input-block">
+						<textarea class="layui-input" required
+						 v-model="mailSender.content" placeholder="发送到邮箱的内容" >
+						 </textarea>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"></label>
+					<input type="submit" class="layui-btn layui-btn-normal"  value="确定" />
+					&nbsp;&nbsp;
+					<input type="button" class="layui-btn layui-btn-danger" @click="reload" value="返回" />
+				</div>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript" src="/js/quartz/email/list.js"></script>
+</body>
+</html>
