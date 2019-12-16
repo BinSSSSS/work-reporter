@@ -86,13 +86,19 @@
 			<version>${cloud-config.version}</version>
 		</dependency>  -->
 
+
 		<!-- 用于远程配置读取的客户端 -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-client</artifactId>
 			<version>${cloud-config.version}</version>
 		</dependency>
-
+	
+		<!-- redis 缓存 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 
 		<!-- jta 事务管理 -->
 		<dependency>

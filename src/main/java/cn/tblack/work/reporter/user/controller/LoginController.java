@@ -53,7 +53,7 @@ public class LoginController {
 
 	@Autowired
 	private VerificationMailService vMailService;
-	
+
 	@Autowired
 	private SysUserRoleService userRoleService;
 
@@ -90,43 +90,54 @@ public class LoginController {
 
 		return result;
 	}
+
 	@PostMapping(value = "/register")
 	public WebResult register(SysUser user, String eCode) {
-		
-		log.info("创建的用户信息 为: " +  user + ",邮件验证码为: " +  eCode);
+
+		log.info("创建的用户信息 为: " + user + ",邮件验证码为: " + eCode);
 		WebResult result = new WebResult();
-		
+
 		// 在数据库中查询是否存在该用户和邮箱。 在前台每次填写完成之后，我们都会异步的进行检查是否存在该用户名或者是邮箱
-		// 这里再次检查是为了放置出现其他意外
-		if (userService.canBeRegister(user)) {
-			// 如果该用户没有被注册过，那么则检查传递的邮箱验证码是否正确
-			VerificationMail vm = vMailService.findLastMail(user.getEmail(),VCodeEmailTypes.REGISTER_CODE); // 拿到最后一封发送给该邮箱的验证码对象
 
-			// 检查vm是否已经过期
-			Date date = vm.getDeadline();
+		if (userService.findByEmailAddress(user.getEmail()) != null) {
+			result.setMsg("该邮箱已经被注册~");
+			result.setSuccess(false);
+			return result;
+		}
 
-			// 如果未过期的话，检查验证码是否相同
-			if (date.getTime() > System.currentTimeMillis()) {
+		if (userService.findByUsername(user.getUsername()) != null) {
+			result.setMsg("该用户名已经被注册~");
+			result.setSuccess(false);
+			return result;
+		}
 
-				// 如果验证码相同,注册该用户
-				if (vm.getCode().equalsIgnoreCase(eCode)) {
+		// 如果该用户没有被注册过，那么则检查传递的邮箱验证码是否正确
+		VerificationMail vm = vMailService.findLastMail(user.getEmail(), VCodeEmailTypes.REGISTER_CODE); // 拿到最后一封发送给该邮箱的验证码对象
 
-					// 将密码进行加密
-					user.setPassword(MD5Utils.encrypt(user.getPassword()));
-					user.setId(DatabaseTableIdGenerator.createUserId(userService));
-					try {
-						
-						userService.save(user);
-						// 给该用户分配角色
-						userRoleService.grantUserRole(user);
-						result.setMsg("注册成功");
-						result.setSuccess(true);
-					} catch (Exception e) {
-						log.error("注册用户失败:[  " + user + "], 失败原因为:" + e.getMessage());
-						e.printStackTrace();
-						result.setSuccess(false);
-						result.setMsg("服务器出了点小差~稍后再试");
-					}
+		// 检查vm是否已经过期
+		Date date = vm.getDeadline();
+
+		// 如果未过期的话，检查验证码是否相同
+		if (date.getTime() > System.currentTimeMillis()) {
+
+			// 如果验证码相同,注册该用户
+			if (vm.getCode().equalsIgnoreCase(eCode)) {
+
+				// 将密码进行加密
+				user.setPassword(MD5Utils.encrypt(user.getPassword()));
+				user.setId(DatabaseTableIdGenerator.createUserId(userService));
+				try {
+
+					userService.save(user);
+					// 给该用户分配角色
+					userRoleService.grantUserRole(user);
+					result.setMsg("注册成功");
+					result.setSuccess(true);
+				} catch (Exception e) {
+					log.error("注册用户失败:[  " + user + "], 失败原因为:" + e.getMessage());
+					e.printStackTrace();
+					result.setSuccess(false);
+					result.setMsg("服务器出了点小差~稍后再试");
 				}
 			}
 		}
@@ -139,9 +150,9 @@ public class LoginController {
 	public WebResult sendEmailCode(@Email String email) {
 
 		WebResult result = new WebResult();
-		
-		log.info("传递的邮箱地址为: " +  email);
-		
+
+		log.info("传递的邮箱地址为: " + email);
+
 		// 首先在数据库中查找该邮箱是否已经发送给邮件并拿到最后发送的邮件信息
 		VerificationMail vm = vMailService.findLastMail(email, VCodeEmailTypes.REGISTER_CODE);
 
@@ -196,7 +207,7 @@ public class LoginController {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @~_~注销操作
 	 * @param request
@@ -206,17 +217,16 @@ public class LoginController {
 	 * @return
 	 */
 	@RequestMapping(value = "/logout.html")
-	public ModelAndView logout(HttpServletRequest request,HttpServletResponse response , 
-			Authentication auth,
+	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response, Authentication auth,
 			ModelAndView vm) {
-		//在SpringSecurity中对该用户做注销操作
+		// 在SpringSecurity中对该用户做注销操作
 		new SecurityContextLogoutHandler().logout(request, response, auth);
-		
-		//清除Session内的全部数据
+
+		// 清除Session内的全部数据
 		request.getSession().removeAttribute("avatarUrl");
-		
+
 		vm.setViewName("redirect:/login.html");
-		
+
 		return vm;
 	}
 

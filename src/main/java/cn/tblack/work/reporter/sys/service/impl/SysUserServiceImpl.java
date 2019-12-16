@@ -129,7 +129,7 @@ public class SysUserServiceImpl implements SysUserService {
 	}
 
 	@Override
-	public SysUser finByEmailAddress(String emailAddress) {
+	public SysUser findByEmailAddress(String emailAddress) {
 		return sysUserDao.findByEmailAddress(emailAddress);
 	}
 	

@@ -8,15 +8,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import cn.tblack.work.reporter.social.auth.SocialLoginAuthentication;
+import cn.tblack.work.reporter.social.enums.SocialPlatformType;
 import cn.tblack.work.reporter.social.qq.model.QQUserInfo;
 import cn.tblack.work.reporter.social.qq.service.QQAuthService;
+import cn.tblack.work.reporter.sys.entity.TempUser;
+import cn.tblack.work.reporter.sys.service.TempUserService;
 
+import static cn.tblack.work.reporter.constant.RequestAttributeNames.*;
 @Controller
 @RequestMapping("/social/qq")
 public class QQLoginController {
@@ -27,6 +32,9 @@ public class QQLoginController {
 	@Autowired
 	private QQAuthService qqAuthService;
 	
+	
+	@Autowired
+	private TempUserService tempUserService;
 	/**
 	 * @~_~_~QQ登陆页面
 	 * @return
@@ -60,23 +68,41 @@ public class QQLoginController {
 				//拿到用户信息
 				if(openid != null) {
 					QQUserInfo userInfo =  qqAuthService.getUserInfo(accessToken, openid);
-					log.info("当前登录的用户信息为: " +  userInfo);
+//					log.info("当前登录的用户信息为: " +  userInfo);
+					
+					//如果之前用户未在本网站登录过的话。创建一个新的临时用户信息
+					TempUser tuser = tempUserService.findByOpenIdAndSocialPlatform(openid, SocialPlatformType.QQ);
+					if(tuser == null)
+					{
+						//将QQ用户添加到临时的用户数据库中
+						tuser = new TempUser();
+						tuser.setAvatarUrl(userInfo.getFigureurl_qq_1());
+						tuser.setNickname(userInfo.getNickname());
+						tuser.setOpenId(openid);
+						tuser.setSocialPlatform(SocialPlatformType.QQ);						
+						
+					}
+					tempUserService.save(tuser);
 					
 					//将登录用户保存在临时登录信息中-并在SecurityContext添加一个普通的用户权限
 					if(userInfo != null && userInfo.getRet().equals("0")) {
-						/**为QQ登录的用户分配一个普通的用户权限*/
+						/**为QQ登录的用户分配游客权限*/
 						Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-						authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+						authorities.add(new SimpleGrantedAuthority("ROLE_VISITOR"));
 						
 						// 设置当前登陆用户的Authentication到SecurityContext中去。
-						UsernamePasswordAuthenticationToken token =
+						SocialLoginAuthentication token =
 								// 将用户名和密码注入到Authentication对象当中
-								new UsernamePasswordAuthenticationToken(userInfo.getNickname(),"",authorities);
+								new SocialLoginAuthentication(userInfo.getNickname(),
+										openid,SocialPlatformType.QQ,authorities);
 						// 将当前用户的信息注入到SpringContextHolder当中
 						SecurityContextHolder.getContext().setAuthentication(token);
 						
 						log.info("QQ用户[" + userInfo.getNickname() + " ]登录成功");
-						request.getSession().setAttribute("avatarUrl", userInfo.getFigureurl_qq_1());
+						/*在Session存放信息*/
+						request.getSession().setAttribute(AVATAR_URL, userInfo.getFigureurl_qq_1());
+						request.getSession().setAttribute(OPENID, openid);
+						request.getSession().setAttribute(SOCIAL_PLATFORM, SocialPlatformType.QQ);
 						
 						return "redirect:/index.html";
 					}

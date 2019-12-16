@@ -62,12 +62,12 @@ public class QQAuthServiceImpl implements QQAuthService{
 	
 		String response  = getResponseString(url);
 		
-		log.info("getAccessToken的响应信息为: " +  response);
+//		log.info("getAccessToken的响应信息为: " +  response);
 	
 		//将响应数据按照格式组建为一个Map对象
 		Map<String,String> params = toParamMap(response);
 		
-		log.info("getAccessToken的响应Map为: " +  params);
+//		log.info("getAccessToken的响应Map为: " +  params);
 		
 		//如果map对象中不存在access_token返回null
 		return params.get("access_token");
@@ -80,11 +80,12 @@ public class QQAuthServiceImpl implements QQAuthService{
 		
 		String response =  getResponseString(url);
 
+		log.info("拿到的OpenId信息:" + response);
 		JSONObject json = getJsonObject(response);
 		
 		@SuppressWarnings("unchecked")
 		Map<String,String> params = json.toJavaObject(Map.class);
-		log.info("Map对象: " + params);
+//		log.info("Map对象: " + params);
 		
 		return params.get("openid");
 	}
@@ -108,7 +109,7 @@ public class QQAuthServiceImpl implements QQAuthService{
 		
 		String response = getResponseString(url);
 		
-		log.info("拿到的用户返回信息为: " +  response);
+//		log.info("拿到的用户返回信息为: " +  response);
 		
 		JSONObject json = getJsonObject(response);
 

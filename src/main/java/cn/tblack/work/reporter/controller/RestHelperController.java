@@ -86,7 +86,7 @@ public class RestHelperController {
 			SysUser user = userService.findByUsername(userToken);
 
 			if (user == null) {
-				user = userService.finByEmailAddress(userToken);
+				user = userService.findByEmailAddress(userToken);
 			}
 
 			if (user == null) {

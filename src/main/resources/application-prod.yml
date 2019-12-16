@@ -72,8 +72,8 @@ spring:
   mail:
     host: smtp.qq.com
     port: 465
-    username: 1395926989@qq.com
-    password: wqmbhzvaurccigag
+    username: 
+    password: 
     properties:
       mail:
         smtp:
@@ -85,7 +85,7 @@ spring:
               class: javax.net.ssl.SSLSocketFactory
   #会话配置
   session:
-    store-type: none
+    store-type: redis
     timeout: 600
   jackson:
     serialization:
@@ -93,7 +93,7 @@ spring:
   quartz:
     startup-delay: 5s
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
     auto-startup: true
     job-store-type: jdbc
     properties:
@@ -123,6 +123,20 @@ spring:
       max-request-size: 100MB
       file-size-threshold: 1MB
       location: upload/files        
+   #Redis缓存配置
+  redis:
+    host: 127.0.0.1 
+    password: binss
+    port: 6379
+    timeout: 3000
+    ##### Redis 线程池配置###############
+    jedis:
+      pool:
+        max-idle: 20
+        min-idle: 10
+        max-active: 20
+        max-wait: 3000
+  
 server:
   port: 7777
 # 日志配置
@@ -143,9 +157,12 @@ management:
       exposure:
         include:
         - '*'
-        
+
+    
 #社交登录
 social:
   qq: 
-    appId: 101833743
-    appSecret: 0b2cea85c69c3a87d7fb2fa9784ced18
+    appId: 
+    appSecret: 
+    
+    

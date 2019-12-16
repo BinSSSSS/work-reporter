@@ -37,6 +37,7 @@ import cn.tblack.work.reporter.schedule.job.ReminderTask;
 import cn.tblack.work.reporter.schedule.util.CronUtilsHelper;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.service.SysUserService;
+import cn.tblack.work.reporter.user.util.UserInjectionUtils;
 import cn.tblack.work.reporter.util.FileWriter;
 import cn.tblack.work.reporter.util.WeightsUtils;
 
@@ -56,7 +57,9 @@ public class RestScheduleEmailController {
 	private ReminderScheduler reminderScheduler;
 	@Autowired
 	private SysUserService userService;
-	
+
+	@Autowired
+	private UserInjectionUtils userInjectionUtils;
 
 	@RequestMapping(value = "/verify-cron-expression", method = RequestMethod.POST)
 	/**
@@ -83,23 +86,24 @@ public class RestScheduleEmailController {
 	}
 
 	@PostMapping(value = "/addReminder")
-	public WebResult addReminder(
-			MailSender mailSender, Schedule schedule, String delayCron,
-			@RequestParam("attachment") MultipartFile file,
-			Authentication auth) {
+	public WebResult addReminder(MailSender mailSender, Schedule schedule, String delayCron,
+			@RequestParam("attachment") MultipartFile file, Authentication auth) {
 		WebResult result = new WebResult();
-		
+
 		try {
-			
-			//查找当前操作的用户对象
+
+			// 查找当前操作的用户对象
 			SysUser user = userService.findByUsername(auth.getName());
-			
-			//拿到下次执行时间
+
+			//如果该用户是第三方登录，则会进行信息的注入
+			user = userInjectionUtils.injectSysUser(user, auth);
+
+			// 拿到下次执行时间
 			Date nextExecutionDate = CronUtilsHelper.nextExecutionDate(schedule.getCron());
 
-			//创建一个提醒对象
+			// 创建一个提醒对象
 			Reminder reminder = new Reminder();
-			
+
 			// 检查任务是否是一个重复执行的任务
 			if (CronUtilsHelper.nextExecutionDateList(schedule.getCron(), nextExecutionDate).size() < 2) {
 
@@ -108,10 +112,10 @@ public class RestScheduleEmailController {
 			} else {
 				schedule.setRepeat(TRUE);
 			}
-			String fileName = file.getOriginalFilename();  //原始文件名
+			String fileName = file.getOriginalFilename(); // 原始文件名
 			// 如果存在附件的话，将该附件保存在本地
 			if (file != null && !fileName.isEmpty()) {
-				
+
 				File dir = new File(UPLOAD_LOCATION + user.getUsername());
 
 				// 如果当前文件夹不存在
@@ -119,17 +123,16 @@ public class RestScheduleEmailController {
 					// 创建文件夹
 					dir.mkdirs();
 				}
-				//将文件名加上时间戳--
+				// 将文件名加上时间戳--
 				fileName += "_" + WeightsUtils.secondTimeWeights(new GregorianCalendar());
 				String savePath = dir.getAbsolutePath() + "/" + fileName;
 				// 保存该文件
-				FileWriter.writeToFile(file.getInputStream(), (int) file.getSize(), WRITE_BUFFER_SIZE,
-						savePath);
-				
-				//设置该附件的地址
+				FileWriter.writeToFile(file.getInputStream(), (int) file.getSize(), WRITE_BUFFER_SIZE, savePath);
+
+				// 设置该附件的地址
 				mailSender.setAttachments(savePath);
-				
-				log.info("当前用户上传了一个附件: " + fileName + ",文件被保存在: " + savePath);
+
+				log.info("用户 [" + user.getUsername() + "]上传了一个附件: " + fileName + ",文件被保存在: " + savePath);
 			}
 
 			// 给数据赋值
@@ -138,15 +141,14 @@ public class RestScheduleEmailController {
 			reminder.setUserId(user.getId());
 			reminder.setSchedule(schedule);
 			mailSender.setSendTime(nextExecutionDate); // 计算到下次执行的时间并发送
-			
+
 			// 将数据插入到数据库中
 			scheduleService.save(schedule);
 			mailSendService.save(mailSender);
 			reminder.setMailSender(mailSender);
 			reminder.setSchedule(schedule);
 			reminderService.save(reminder);
-			
-			
+
 			// 直接创建一个ReminderTask任务
 			ReminderTask task = new ReminderTask(reminder);
 
@@ -161,14 +163,13 @@ public class RestScheduleEmailController {
 			}
 			result.setMsg("添加成功");
 			result.setSuccess(true);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("添加一个提醒出错，出错信息为: " +  e.getMessage());
+			log.error("添加一个提醒出错，出错信息为: " + e.getMessage());
 			result.setMsg("添加出错，服务器正忙~");
 			result.setSuccess(false);
 		}
-		
-		
+
 		return result;
 	}
 

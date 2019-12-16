@@ -16,4 +16,14 @@ public class RequestAttributeNames {
 	
 	/**~=-=~存放一些通行信息*/
 	public static final String TOKEN = "token";
+
+	/**!_!_!存放第三方登录的openid*/
+	public static final String OPENID = "openid";
+	
+	/**!_!_!存放第三方登录平台类型*/
+	public static final String SOCIAL_PLATFORM = "socialPlatform";
+	
+	/**~——~用户头像链接地址*/
+	public static final String AVATAR_URL = "avatarUrl";
+	
 }

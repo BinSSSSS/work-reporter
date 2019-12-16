@@ -74,7 +74,7 @@ public interface SysUserService extends AbstractDBService<String>{
 	 * @param emailAddress
 	 * @return
 	 */
-	SysUser finByEmailAddress(String emailAddress);
+	SysUser findByEmailAddress(String emailAddress);
 	
 	/**
 	 * @=-=通过用户名来模糊分页查找。
@@ -98,5 +98,6 @@ public interface SysUserService extends AbstractDBService<String>{
 	 * @return
 	 */
 	boolean canBeRegister(SysUser user);
+	
 	
 }

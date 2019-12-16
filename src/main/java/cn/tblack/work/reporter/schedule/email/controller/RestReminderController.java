@@ -1,5 +1,8 @@
 package cn.tblack.work.reporter.schedule.email.controller;
 
+import static cn.tblack.work.reporter.constant.CustomBoolean.FALSE;
+import static cn.tblack.work.reporter.constant.CustomBoolean.TRUE;
+
 import org.quartz.JobKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +26,7 @@ import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.schedule.ReminderScheduler;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.service.SysUserService;
-import static cn.tblack.work.reporter.constant.CustomBoolean.*;
+import cn.tblack.work.reporter.user.util.UserInjectionUtils;
 
 /**
  * @__!_!用于进行提醒管理的控制器
@@ -51,6 +54,9 @@ public class RestReminderController {
 
 	@Autowired
 	private ReminderScheduler reminderScheduler;
+
+	@Autowired
+	private UserInjectionUtils userInjectionUtils;
 
 	@RequestMapping(value = "/page-list")
 	public LaYuiPage<Reminder> getPageList(@RequestParam(name = "page", defaultValue = "1") Integer page,
@@ -113,16 +119,19 @@ public class RestReminderController {
 	}
 
 	@RequestMapping(value = "/delete")
-	public WebResult deleteTemplate(String ids,
-			Authentication auth) {
+	public WebResult deleteTemplate(String ids, Authentication auth) {
 
 		WebResult result = new WebResult();
 
 		String[] idArr = ids.split(",");
 
 		try {
+
 			SysUser user = userService.findByUsername(auth.getName());
-			
+
+			//如果该用户是第三方登录，则会进行信息的注入
+			user = userInjectionUtils.injectSysUser(user, auth);
+
 			for (String id : idArr) {
 				reminderService.deleteById(Integer.valueOf(id));
 				// 在当前的调度任务中进行删除本调度任务
@@ -172,11 +181,14 @@ public class RestReminderController {
 		try {
 			String[] idArr = ids.split(",");
 			SysUser user = userService.findByUsername(auth.getName());
-
+			
+			//如果该用户是第三方登录，则会进行信息的注入
+			user = userInjectionUtils.injectSysUser(user, auth);
+			
 			for (String id : idArr) {
 				// 从数据库中更改reminder的状态
 				reminderService.updateDeprecated(Integer.valueOf(id), TRUE);
-				
+
 				// 在当前的调度任务中进行暂停本调度任务--这里需要判断- 本调度任务是否是一个延时的调度任务
 				// 如果任务调度中心找不到该调度任务，那么则调度任务可能是一个延时调度任务
 				// 暂时直接使用了全部的调度任务判断是否是一个延时调度任务
@@ -210,6 +222,10 @@ public class RestReminderController {
 			String[] idArr = ids.split(",");
 			// 拿到当前用户
 			SysUser user = userService.findByUsername(auth.getName());
+			
+			//如果该用户是第三方登录，则会进行信息的注入
+			user = userInjectionUtils.injectSysUser(user, auth);
+			
 			for (String id : idArr) {
 				// 从数据库中更改reminder的状态
 				reminderService.updateDeprecated(Integer.valueOf(id), FALSE);
