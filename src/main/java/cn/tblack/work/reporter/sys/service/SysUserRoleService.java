@@ -1,10 +1,12 @@
 package cn.tblack.work.reporter.sys.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Sort;
 
 import cn.tblack.work.reporter.service.AbstractDBService;
+import cn.tblack.work.reporter.sys.entity.SysRole;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.entity.SysUserRole;
 
@@ -64,4 +66,11 @@ public interface SysUserRoleService extends AbstractDBService<Integer>{
 	 * @return
 	 */
 	boolean grantAdminRole(SysUser user);
+	
+	/**
+	 * @~_~通过用户id来查找该用户所对应的角色信息
+	 * @param id
+	 * @return
+	 */
+	Set<SysRole> findUserRoleByUserId(String id);
 }

@@ -1,6 +1,7 @@
 package cn.tblack.work.reporter.sys.service.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -140,5 +141,10 @@ public class SysUserRoleServiceImpl implements SysUserRoleService{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Set<SysRole> findUserRoleByUserId(String userId) {
+		return userRoleDao.findUserRoleByUserId(userId);
 	}
 }

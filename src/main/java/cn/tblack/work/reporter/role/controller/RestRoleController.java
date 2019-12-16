@@ -135,7 +135,7 @@ public class RestRoleController {
 		
 		WebResult result = new WebResult();
 		
-		log.info("当前传递的角色信息为: " + sysRole);
+//		log.info("当前传递的角色信息为: " + sysRole);
 		
 		try {
 			
@@ -178,6 +178,7 @@ public class RestRoleController {
 			for (String resId : orgResIdList) {
 				resRoleService.revokeResRole(resId, sysRole.getId());
 			}
+			resService.flush();  //刷新资源列表-主要为清除缓存操作
 			result.setMsg("更新成功~");
 			result.setSuccess(true);
 		}catch(Exception e) {
@@ -198,7 +199,7 @@ public class RestRoleController {
 	public WebResult batchAuthorize(@RequestBody BatchAuthorize batchAuth) {
 		WebResult result = new WebResult();
 		
-		log.info("传递的批量授权对象信息为: " +  batchAuth);
+//		log.info("传递的批量授权对象信息为: " +  batchAuth);
 		
 		if(batchAuth == null || batchAuth.isEmpty()) {
 			result.setMsg("批量授权对象内的资源和角色信息不能为空~");
@@ -262,7 +263,7 @@ public class RestRoleController {
 		
 		WebResult result =  new WebResult();
 		
-		log.info("插入的角色信息为: " +  role);
+//		log.info("插入的角色信息为: " +  role);
 		
 		try {
 			List<String> resIdList = role.getResIdList();
@@ -294,11 +295,9 @@ public class RestRoleController {
 	@RequestMapping(value = "/role-list")
 	public List<SysRole> roleList(@RequestParam(name = "roleName",defaultValue = "")String roleName) {
 		
-		log.info("传递的角色名字为: " +  roleName);
+//		log.info("传递的角色名字为: " +  roleName);
 		List<SysRole> list = roleService.fuzzyFindByRoleName(roleName);
-		
-	
-		
+			
 		return list;
 	}
 }

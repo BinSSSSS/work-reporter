@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -69,8 +68,7 @@ public class RestUserController {
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 
 		List<SysUser> userList = findUserByMultiCritria(searchText, pageable);
-
-		log.info("最终组合在一起的数据为: " + userList);
+		
 
 		return new LaYuiPage<SysUser>(new PageImpl<SysUser>(userList, pageable, userList.size()));
 	}
@@ -135,6 +133,10 @@ public class RestUserController {
 			// 将敏感信息设置为空
 			user.setPassword("");
 			user.setCredentialsSalt("");
+			
+			if(user.getRoles() == null) {
+				user.setRoles(userRoleService.findUserRoleByUserId(user.getId()));
+			}
 			user.setRoleIds();
 		} catch (Exception e) {
 			log.error("查询用户出现错误，错误信息为: " + e.getMessage());
@@ -150,7 +152,7 @@ public class RestUserController {
 
 		WebResult result = new WebResult();
 
-		log.info("传递的用户信息为: " + user);
+//		log.info("传递的用户信息为: " + user);
 
 		try {
 			// 首先在数据库内查找当前对象的id是否存在。如果该id不存在，则不进行更新操作
@@ -250,18 +252,18 @@ public class RestUserController {
 	 * @return
 	 */
 	private List<SysUser> findUserByMultiCritria(String searchText, Pageable pageable) {
-		Page<SysUser> usernamePage = userService.findAllByUsername(searchText, pageable);
+		LaYuiPage<SysUser> usernamePage = userService.findAllByUsername(searchText, pageable);
 		Long count = userService.count();
 		// 组合多个查询结果
-		List<SysUser> usernameList = usernamePage.getContent();
+		List<SysUser> usernameList = usernamePage.getResult();
 		List<SysUser> userList = new ArrayList<>();
 		// 第一次查询到所有的数据，之后无需要整合
-		if (usernamePage.getSize() == count) {
+		if (Long.valueOf(usernamePage.getCount()) == count) {
 			userList = usernameList;
 		} else {
-			Page<SysUser> phoneNumPage = userService.findAllByPhoneNum(searchText, pageable);
+			LaYuiPage<SysUser> phoneNumPage = userService.findAllByPhoneNum(searchText, pageable);
 
-			List<SysUser> phoneList = phoneNumPage.getContent();
+			List<SysUser> phoneList = phoneNumPage.getResult();
 
 			// 如果通过手机号码查询到了数据库内所有数据，无需要再次整合
 			if (phoneList.size() == count) {

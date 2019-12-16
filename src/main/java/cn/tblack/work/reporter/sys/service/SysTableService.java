@@ -1,8 +1,6 @@
 package cn.tblack.work.reporter.sys.service;
 
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -52,14 +50,14 @@ public interface SysTableService extends AbstractDBService<Integer>{
 	 * @!_!通过指定的数据库名在系统表信息中查找到指定数据库的所有的表信息
 	 * @param schema
 	 */
-	List<Map<String,Object>> findAllBySchema(String schema);
+	List<SysTable> findAllBySchema(String schema);
 
 	/**
 	 * @!_!通过指定的数据库名和在系统表信息中查找指定数据库内符合模糊查找表名的表数据信息
 	 * @param schemaName
 	 * @return
 	 */
-	List<Map<String,Object>> findAllBySchemaAndTableName(String schemaName,String tableName);
+	List<SysTable> findAllBySchemaAndTableName(String schemaName,String tableName);
 	
 	/**
 	 * @!_!通过指定的数据库名和在系统表信息中查找指定数据库内符合模糊查找表名的表数据信息,并进行分页
@@ -69,7 +67,7 @@ public interface SysTableService extends AbstractDBService<Integer>{
 	 * @param pageSize
 	 * @return
 	 */
-	List<Map<String,Object>> findAllBySchemaAndTableName(String schemaName,String tableName,Integer pageNo,Integer pageSize);
+	List<SysTable> findAllBySchemaAndTableName(String schemaName,String tableName,Integer pageNo,Integer pageSize);
 	
 	
 	/**
@@ -78,7 +76,7 @@ public interface SysTableService extends AbstractDBService<Integer>{
 	 * @param tableName
 	 * @return
 	 */
-	Map<String, Object> findBySchemaAndTableName( String schemaName,
+	SysTable findBySchemaAndTableName( String schemaName,
 			 String tableName);
 	
 	/**
@@ -87,7 +85,7 @@ public interface SysTableService extends AbstractDBService<Integer>{
 	 * @param tableName
 	 * @return
 	 */
-	Map<String, Object> findBySchemaAndTableName(String schemaName,
+	SysTable findBySchemaAndTableName(String schemaName,
 			 String tableName,
 			 Integer pageNo,
 			 Integer pageSize);

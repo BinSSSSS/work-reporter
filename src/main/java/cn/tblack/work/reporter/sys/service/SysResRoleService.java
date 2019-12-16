@@ -1,11 +1,13 @@
 package cn.tblack.work.reporter.sys.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Sort;
 
 import cn.tblack.work.reporter.service.AbstractDBService;
 import cn.tblack.work.reporter.sys.entity.SysResRole;
+import cn.tblack.work.reporter.sys.entity.SysRole;
 
 public interface SysResRoleService extends AbstractDBService<Integer>{
 
@@ -49,4 +51,11 @@ public interface SysResRoleService extends AbstractDBService<Integer>{
 	 * @param roleId
 	 */
 	void revokeResRole(String resId, String roleId);
+		
+	/**
+	 * @~_~通过资源的id来查找该资源对应的角色信息
+	 * @param resId
+	 * @return
+	 */
+	Set<SysRole> findResRoleByResId(String resId);
 }

@@ -16,15 +16,15 @@ public enum OssType  implements PersistEnum2DB<Integer>{
 	QINIU(3,"七牛存储桶");
 	
 	
-	private int value;
+	private Integer value;
 	private String desc;
 	
-	private OssType(int value, String desc) {
+	private OssType(Integer value, String desc) {
 		this.value = value;
 		this.desc = desc; 
 	}
 
-	public int getValue() {
+	public Integer getValue() {
 		return value;
 	}
 

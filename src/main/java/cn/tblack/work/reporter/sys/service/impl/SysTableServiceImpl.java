@@ -1,7 +1,6 @@
 package cn.tblack.work.reporter.sys.service.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,16 +9,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static cn.tblack.work.reporter.gen.util.EntityInjectionUtil.*;
 import cn.tblack.work.reporter.sys.dao.SysTableDao;
 import cn.tblack.work.reporter.sys.entity.SysTable;
 import cn.tblack.work.reporter.sys.service.SysTableService;
+
 @Service
 @Transactional
 public class SysTableServiceImpl implements SysTableService {
 
 	@Autowired
 	private SysTableDao tableDao;
-	
+
 	@Override
 	public List<SysTable> findAll() {
 		return tableDao.findAll();
@@ -75,7 +76,6 @@ public class SysTableServiceImpl implements SysTableService {
 		return tableDao.findById(id).get();
 	}
 
-
 	@Override
 	public boolean existsById(Integer id) {
 		return tableDao.existsById(id);
@@ -112,32 +112,43 @@ public class SysTableServiceImpl implements SysTableService {
 	}
 
 	@Override
-	public List<Map<String, Object>> findAllBySchema(String schema) {
-		return tableDao.findAllBySchema(schema);
+	public List<SysTable> findAllBySchema(String schema) {
+
+		return beanListInjection(new SysTable(), tableDao.findAllBySchema(schema));
 	}
 
 	@Override
-	public List<Map<String, Object>> findAllBySchemaAndTableName(String schemaName, String tableName) {
-		return tableDao.fuzzyFindAllBySchemaAndTableName(schemaName,tableName);
+	public List<SysTable> findAllBySchemaAndTableName(String schemaName, String tableName) {
+		return beanListInjection(new SysTable(), 
+				tableDao.fuzzyFindAllBySchemaAndTableName(schemaName, tableName));
 	}
 
 	@Override
-	public List<Map<String, Object>> findAllBySchemaAndTableName(String schemaName, String tableName, Integer pageNo,
+	public List<SysTable> findAllBySchemaAndTableName(String schemaName, String tableName, Integer pageNo,
 			Integer pageSize) {
-		return tableDao.fuzzyFindAllBySchemaAndTableName(schemaName,tableName,pageNo * pageSize,pageSize);
+		return beanListInjection(new SysTable(),
+				tableDao.fuzzyFindAllBySchemaAndTableName(schemaName, tableName, pageNo * pageSize, pageSize));
 	}
 
 	@Override
-	public Map<String, Object> findBySchemaAndTableName(String schemaName, String tableName) {
-		return tableDao.findBySchemaAndTableName(schemaName, tableName);
+	public SysTable findBySchemaAndTableName(String schemaName, String tableName) {
+		SysTable table = new SysTable();
+		if (beanInjection(new SysTable(), 
+				tableDao.findBySchemaAndTableName(schemaName, tableName)))
+			return table;
+		return null;
 	}
 
 	@Override
-	public Map<String, Object> findBySchemaAndTableName(String schemaName, String tableName, Integer pageNo,
+	public SysTable findBySchemaAndTableName(String schemaName, String tableName, Integer pageNo,
 			Integer pageSize) {
-		return tableDao.findBySchemaAndTableName(schemaName, tableName, pageNo, pageSize);
+		
+		SysTable table = new SysTable();
+		if (beanInjection(new SysTable(),
+				tableDao.findBySchemaAndTableName(schemaName, tableName, pageNo, pageSize)))
+			return table;
+		
+		return null;
 	}
-
-
 
 }

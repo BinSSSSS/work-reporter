@@ -52,6 +52,4 @@ public interface VerificationMailService extends AbstractDBService<Integer>{
 	 */
 	VerificationMail findLastMail(String email,VCodeEmailTypes type);
 
-
-
 }

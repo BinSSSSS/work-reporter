@@ -3,7 +3,6 @@ package cn.tblack.work.reporter.schedule.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,14 +31,12 @@ public class RestScheduleJobController {
 		
 		LaYuiPage<ScheduleJob> scheduleJobLPage = null;
 		
-		
 		try {
 			
 			Pageable pageable = PageRequest.of(curPage - 1, pageSize);
 			
-			Page<ScheduleJob> pageimpl  = scheduleJobService.findAll(pageable);
+			scheduleJobLPage  = scheduleJobService.findAll(pageable);
 			
-			scheduleJobLPage = new LaYuiPage<>(pageimpl);
 		}catch(Exception e) {
 			e.printStackTrace();
 			log.error("查询ScheuleJob数据库出错，出错原因为:" + e.getMessage());

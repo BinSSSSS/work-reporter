@@ -6,11 +6,11 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.quartz.dao.ReminderDao;
 import cn.tblack.work.reporter.quartz.entity.Reminder;
 import cn.tblack.work.reporter.quartz.service.ReminderService;
@@ -116,9 +116,9 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	@Override
-	public Page<Reminder> findAll(Pageable pageable) {
+	public LaYuiPage<Reminder> findAll(Pageable pageable) {
 	
-		return reminderDao.findAll(pageable);
+		return new LaYuiPage<Reminder>(reminderDao.findAll(pageable));
 	}
 
 	@Override
@@ -128,8 +128,8 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	@Override
-	public Page<Reminder> findRemindersByUserId(String userId, Pageable pageable) {
-		return reminderDao.findRemindersByUserId(userId,pageable);
+	public LaYuiPage<Reminder> findRemindersByUserId(String userId, Pageable pageable) {
+		return new LaYuiPage<Reminder>(reminderDao.findRemindersByUserId(userId,pageable));
 	}
 
 }

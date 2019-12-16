@@ -2,16 +2,16 @@ package cn.tblack.work.reporter.sys.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.service.AbstractDBService;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 
 public interface SysUserService extends AbstractDBService<String>{
 	
-	Page<SysUser> findAll(Pageable pageable);
+	LaYuiPage<SysUser> findAll(Pageable pageable);
 	
 	List<SysUser> findAll();
 
@@ -82,7 +82,7 @@ public interface SysUserService extends AbstractDBService<String>{
 	 * @param pageable
 	 * @return
 	 */
-	Page<SysUser> findAllByUsername(String username, Pageable pageable);
+	LaYuiPage<SysUser> findAllByUsername(String username, Pageable pageable);
 
 	/**
 	 * @~_~通过手机号码来模糊查找
@@ -90,7 +90,7 @@ public interface SysUserService extends AbstractDBService<String>{
 	 * @param pageable
 	 * @return
 	 */
-	Page<SysUser> findAllByPhoneNum(String phone, Pageable pageable);
+	LaYuiPage<SysUser> findAllByPhoneNum(String phone, Pageable pageable);
 
 	/**
 	 * @!_!!检查某个用户名是否已经存在

@@ -1,22 +1,23 @@
 package cn.tblack.work.reporter.sys.service.impl;
 
+import static cn.tblack.work.reporter.constant.RedisCacheBeanDefinition.REDIS_CACHE_KEY_GENERATOR;
+import static cn.tblack.work.reporter.constant.RedisCacheBeanDefinition.REDIS_CACHE_MANAGER;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.sys.dao.SysUserDao;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.service.SysUserService;
-import cn.tblack.work.reporter.util.MD5Utils;
-
-import static cn.tblack.work.reporter.constant.RedisCacheBeanDefinition.REDIS_CACHE_KEY_GENERATOR;
-import static cn.tblack.work.reporter.constant.RedisCacheBeanDefinition.REDIS_CACHE_MANAGER;;
+import cn.tblack.work.reporter.util.MD5Utils;;
 @Service
 @Transactional
 @CacheConfig(keyGenerator = REDIS_CACHE_KEY_GENERATOR,cacheManager = REDIS_CACHE_MANAGER, 
@@ -140,19 +141,19 @@ public class SysUserServiceImpl implements SysUserService {
 	}
 	
 	@Override
-	public Page<SysUser> findAll(Pageable pageable){
-		return sysUserDao.findAll(pageable);
+	public LaYuiPage<SysUser> findAll(Pageable pageable){
+		return  new LaYuiPage<SysUser>(sysUserDao.findAll(pageable));
 	}
 
 	@Override
-	public Page<SysUser> findAllByUsername(String username, Pageable pageable) {
+	public  LaYuiPage<SysUser> findAllByUsername(String username, Pageable pageable) {
 		
-		return sysUserDao.findAllByUsername(username,pageable);
+		return new LaYuiPage<SysUser>(sysUserDao.findAllByUsername(username,pageable));
 	}
 	
 	@Override
-	public Page<SysUser> findAllByPhoneNum(String phone,Pageable pageable){
-		return sysUserDao.findAllByPhoneNum(phone,pageable);
+	public LaYuiPage<SysUser> findAllByPhoneNum(String phone,Pageable pageable){
+		return new LaYuiPage<SysUser>( sysUserDao.findAllByPhoneNum(phone,pageable));
 	}
 
 	@Override

@@ -2,10 +2,10 @@ package cn.tblack.work.reporter.sys.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.service.AbstractDBService;
 import cn.tblack.work.reporter.sys.entity.SysGenTemp;
 
@@ -53,7 +53,7 @@ public interface SysGenTempService extends AbstractDBService<String>{
 	 */
 	List<SysGenTemp> selectAllByGenFilename(String filename, boolean isBlur);
 
-	Page<SysGenTemp> findAll(Pageable pageable);
+	LaYuiPage<SysGenTemp> findAll(Pageable pageable);
 
 	/**
 	 * @_!_!根据StyleId进行分页查找
@@ -61,7 +61,7 @@ public interface SysGenTempService extends AbstractDBService<String>{
 	 * @param pageable
 	 * @return
 	 */
-	Page<SysGenTemp> findAllByStyleId(String styleId, Pageable pageable);
+	LaYuiPage<SysGenTemp> findAllByStyleId(String styleId, Pageable pageable);
 
 	/**
 	 * @_!_!根据StyleId进行查询数据

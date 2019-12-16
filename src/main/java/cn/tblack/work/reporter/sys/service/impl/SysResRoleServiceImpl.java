@@ -1,6 +1,7 @@
 package cn.tblack.work.reporter.sys.service.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import cn.tblack.work.reporter.sys.dao.SysResRoleDao;
 import cn.tblack.work.reporter.sys.entity.SysResRole;
+import cn.tblack.work.reporter.sys.entity.SysRole;
 import cn.tblack.work.reporter.sys.service.SysResRoleService;
 
 @Service
@@ -108,5 +110,10 @@ public class SysResRoleServiceImpl implements SysResRoleService {
 	public void revokeResRole(String resId, String roleId) {
 		resRoleDao.revokeResRole(resId, roleId);
 	}
-
+	
+	
+	@Override
+	public Set<SysRole> findResRoleByResId(String resId) {
+		return resRoleDao.findResRoleByResId(resId);
+	}
 }

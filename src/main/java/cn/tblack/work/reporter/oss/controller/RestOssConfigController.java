@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,16 +48,12 @@ public class RestOssConfigController {
 
 		LaYuiPage<OssConfig> configPage = null;
 
-		log.info("进行分页查询");
 		try {
 
 			Pageable pageable = PageRequest.of(page - 1, limit);
 
-			Page<OssConfig> pageImpl = ossConfigService.findAll(pageable);
+			configPage = ossConfigService.findAll(pageable);
 			
-			if(pageImpl != null)
-				configPage = new LaYuiPage<>(pageImpl);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("查询OssConfig分页列表出错，出错原因为: " + e.getMessage());

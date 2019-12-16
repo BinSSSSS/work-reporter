@@ -5,10 +5,10 @@ import java.time.Clock;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.quartz.entity.Reminder;
 
 public interface ReminderService extends Serializable{
@@ -23,7 +23,7 @@ public interface ReminderService extends Serializable{
 
 	List<Reminder> saveAll(Iterable<Reminder> entities);
 
-	Page<Reminder> findAll(Pageable pageable);
+	LaYuiPage<Reminder> findAll(Pageable pageable);
 
 	void flush();
 
@@ -57,5 +57,5 @@ public interface ReminderService extends Serializable{
 
 	void updateDeprecated(Integer id, Short deprecated);
 
-	Page<Reminder> findRemindersByUserId(String userId, Pageable pageable);
+	LaYuiPage<Reminder> findRemindersByUserId(String userId, Pageable pageable);
 }

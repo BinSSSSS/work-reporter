@@ -12,9 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import cn.tblack.work.reporter.constant.CustomBoolean;
 import cn.tblack.work.reporter.constant.DataBaseBeanNames;
 
@@ -30,10 +27,9 @@ public class Reminder implements Serializable{
 
 	private String userId;
 	
-	@JsonIgnore
 	@OneToOne(fetch = FetchType.EAGER, targetEntity = Schedule.class,
 			// 级联实体删除操作
-			cascade = { CascadeType.REMOVE})
+			cascade = { CascadeType.REMOVE,CascadeType.REFRESH,CascadeType.MERGE})
 	private Schedule schedule; // 调度任务，一对一的关系
 //	private Integer scheduleId;
 

@@ -2,10 +2,10 @@ package cn.tblack.work.reporter.sys.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.service.AbstractDBService;
 import cn.tblack.work.reporter.sys.entity.SysGenStyle;
 
@@ -47,5 +47,5 @@ public interface SysGenStyleService extends AbstractDBService<String>{
 
 	List<SysGenStyle> selectAllByName(String name, boolean isBlur);
 
-	Page<SysGenStyle> findAll(Pageable pageable);
+	LaYuiPage<SysGenStyle> findAll(Pageable pageable);
 }

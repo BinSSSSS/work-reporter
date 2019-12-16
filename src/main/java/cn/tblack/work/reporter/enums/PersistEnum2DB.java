@@ -1,6 +1,8 @@
 package cn.tblack.work.reporter.enums;
 
-public interface PersistEnum2DB<DB> {
+import java.io.Serializable;
+
+public interface PersistEnum2DB<DB> extends Serializable{
 	
 	DB getData();
 }

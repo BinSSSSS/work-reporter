@@ -14,7 +14,7 @@ import cn.tblack.work.reporter.sys.entity.VerificationMail;
 import cn.tblack.work.reporter.sys.service.VerificationMailService;
 
 @Service
-@Transactional()
+@Transactional
 public class VerificationMailServiceImpl implements VerificationMailService{
 	
 	@Autowired

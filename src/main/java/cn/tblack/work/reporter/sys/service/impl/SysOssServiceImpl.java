@@ -3,12 +3,12 @@ package cn.tblack.work.reporter.sys.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.sys.dao.SysOssDao;
 import cn.tblack.work.reporter.sys.entity.SysOss;
 import cn.tblack.work.reporter.sys.service.SysOssService;
@@ -106,8 +106,8 @@ public class SysOssServiceImpl implements SysOssService {
 	}
 
 	@Override
-	public Page<SysOss> findAll(Pageable pageable) {
-		return sysOssDao.findAll(pageable);
+	public LaYuiPage<SysOss> findAll(Pageable pageable) {
+		return new LaYuiPage<SysOss>(sysOssDao.findAll(pageable));
 	}
 
 }

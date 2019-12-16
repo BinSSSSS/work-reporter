@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,6 +23,8 @@ public class RedisUtils {
 	
 	@Autowired
 	private KeyGenerator cacheKeyGenerator;
+	
+	private static Logger log =  LoggerFactory.getLogger(RedisUtils.class);
 	
 	/**
 	 * <span>添加缓存对象到 redis 中</span>
@@ -98,11 +102,9 @@ public class RedisUtils {
 
 		Set<String> keys = redisTemplate.keys(pattern);
 		
-		System.err.println("全部的Key:" + redisTemplate.opsForValue());
-		
-		System.err.println("正则表达式Key:" +  keys);
 		if (keys.size() > 0) {
-			redisTemplate.delete(keys);
+			log.info("删除的数据量: " + redisTemplate.delete(keys));
+			
 		}
 	}
 

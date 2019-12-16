@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.tblack.work.reporter.constant.DataBaseBeanNames;
-import cn.tblack.work.reporter.gen.util.EntityInjectionUtil;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysGen;
@@ -79,9 +78,9 @@ public class RestGenCodeController {
 			Pageable pageable = PageRequest.of(curPage - 1, pageSize);
 
 			// 将查询结果转换为一个实体类对象列表
-			tableList = EntityInjectionUtil.beanListInjection(new SysTable(),
+			tableList = 
 					// 分页查询数据，这里使用的自己编写的SQL语句， 使用的MYSQL分页语句。 LIMIT，数据量不多的情况下不影响性能
-					tableService.findAllBySchemaAndTableName(schemaName, tableName, curPage - 1, pageSize));
+					tableService.findAllBySchemaAndTableName(schemaName, tableName, curPage - 1, pageSize);
 
 			// 通过tableList构建一个PageImpl对象
 			PageImpl<SysTable> pageImpl = new PageImpl<>(tableList, pageable, tableList.size());
@@ -163,8 +162,7 @@ public class RestGenCodeController {
 			
 			//对应传递的多个表名进行拆分成单个表名分别进行查询
 			for (String tName : tableNameArr) {
-				SysTable table = new SysTable();
-				EntityInjectionUtil.beanInjection(table, tableService.findBySchemaAndTableName(schemaName, tName));
+				SysTable table = tableService.findBySchemaAndTableName(schemaName, tName);
 				tableList.add(table);
 			}
 			

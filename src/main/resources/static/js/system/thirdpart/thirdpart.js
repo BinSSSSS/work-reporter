@@ -1,7 +1,7 @@
 var vm = new Vue({
     el : '#rrapp',
     data : {
-        title : "第三方配置",
+        title : "第三方社交平台信息配置",
         sina : {
             client_ID : null
         },
@@ -25,10 +25,10 @@ var vm = new Vue({
     },
     methods : {
         query : function() {
-            vm.title = "第三方设置";
+            vm.title = "第三方社交平台信息";
             $.ajax({
                 type : "POST",
-                url : rootPath + "/thirdoartlogin_do/info.do",
+                url : rootPath + "/social/platform/info",
                 dataType : "json",
                 success : function(data) {
                     vm.qq = data.qq;
@@ -43,7 +43,7 @@ var vm = new Vue({
         update : function() {
             $.ajax({
                 type : "POST",
-                url : rootPath + "/thirdoartlogin_do/update.do",
+                url : rootPath + "/social/platform/update",
                 data : {
                     baiduid : vm.baidu.client_ID,
                     baiduSERCRET : vm.baidu.client_SERCRET,

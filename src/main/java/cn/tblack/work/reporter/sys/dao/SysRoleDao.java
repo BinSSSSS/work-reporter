@@ -15,5 +15,6 @@ public interface SysRoleDao extends JpaRepository<SysRole, String>{
 	
 	@Query("SELECT r FROM #{#entityName} r WHERE r.name LIKE %:roleName%")
 	List<SysRole> fuzzyFindByRoleName(String roleName);
+	
 
 }

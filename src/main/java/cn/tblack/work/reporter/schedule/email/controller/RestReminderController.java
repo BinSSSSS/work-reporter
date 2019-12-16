@@ -7,7 +7,6 @@ import org.quartz.JobKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -69,10 +68,11 @@ public class RestReminderController {
 		try {
 
 			Pageable pageable = PageRequest.of(page - 1, limit);
+			
+			reminderPage = reminderService.findAll(pageable);
 
-			Page<Reminder> pageImpl = reminderService.findAll(pageable);
-
-			reminderPage = new LaYuiPage<>(pageImpl);
+//			log.info(reminderPage.getData().toString());
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();

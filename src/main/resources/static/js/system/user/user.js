@@ -121,7 +121,6 @@ var vm = new Vue({
                     $.get(rootPath + '/user/get?id=' + userid,
                         function(user) {
                             vm.user = user;
-                            console.log(user);
                         });
                 });
         },

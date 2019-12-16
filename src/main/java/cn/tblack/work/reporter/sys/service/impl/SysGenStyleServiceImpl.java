@@ -3,12 +3,12 @@ package cn.tblack.work.reporter.sys.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.sys.dao.SysGenStyleDao;
 import cn.tblack.work.reporter.sys.entity.SysGenStyle;
 import cn.tblack.work.reporter.sys.service.SysGenStyleService;
@@ -116,8 +116,8 @@ public class SysGenStyleServiceImpl implements SysGenStyleService {
 	}
 
 	@Override
-	public Page<SysGenStyle> findAll(Pageable pageable) {
-		return sysGenStyleDao.findAll(pageable);
+	public LaYuiPage<SysGenStyle> findAll(Pageable pageable) {
+		return new LaYuiPage<SysGenStyle>(sysGenStyleDao.findAll(pageable));
 	}
 
 }

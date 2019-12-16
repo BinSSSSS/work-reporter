@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import cn.tblack.work.reporter.sys.entity.SysResources;
 import cn.tblack.work.reporter.sys.entity.SysRole;
+import cn.tblack.work.reporter.sys.service.SysResRoleService;
 import cn.tblack.work.reporter.sys.service.SysResourcesService;
 
 @Component
@@ -27,6 +28,9 @@ public class WRSecurityMetadataSource implements FilterInvocationSecurityMetadat
 	/** 将所有的角色和url的对应关系缓存起来 **/
 	@Autowired
 	private SysResourcesService resourcesService;
+	
+	@Autowired
+	private SysResRoleService resRoleService;
 
 	/**
 	 * 参数是要访问的url，返回这个url对于的所有权限（或角色）
@@ -48,10 +52,17 @@ public class WRSecurityMetadataSource implements FilterInvocationSecurityMetadat
 			List<SysResources> allRes = resourcesService.findAllResourcesHasRole();
 			for (SysResources res : allRes) {
 				if (urlMatcher.pathMatchesUrl(res.getResUrl(), url)) {
-					if(res.getRoles() != null)
+					
+					/*如今存在一个问题，那就是在使用JoinTable进行关联字段查询的属性不会被注入到Redis缓存中。
+					 *@所以暂时性的解决办法：如果当前资源的角色信息为空，那么则再次手动查找一次。*/
+					if(res.getRoles() == null) {
+						res.setRoles(resRoleService.findResRoleByResId(res.getId()));
+					}
+					if(res.getRoles() != null) {
 						for (SysRole role : res.getRoles()) {
 							roles.add(role.getRoleKey());
 						}
+					}
 				}
 			}
 		} catch (Exception e) {

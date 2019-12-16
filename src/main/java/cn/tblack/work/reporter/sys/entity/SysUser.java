@@ -17,11 +17,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import cn.tblack.work.reporter.constant.DataBaseBeanNames;
 import cn.tblack.work.reporter.util.excel.ExcelVOAttribute;
 
@@ -56,14 +55,15 @@ public class SysUser implements Serializable {
 
 	@Column(name = "is_delete")
 	private Integer isDelete;
-
+	
+	
 	@JsonIgnore
 	@ManyToMany(targetEntity = SysRole.class, fetch = FetchType.EAGER,
 			// 级联实体持久化操作和级联实体合并操作
-			cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+			cascade = { CascadeType.REMOVE,CascadeType.REFRESH,CascadeType.MERGE })
 	// 级联查询通过外键进行操作,inverseJoinColumns表示的就是外键
-	@JoinTable(name = "sys_user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "role_id") })
+	@JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = {
+			@JoinColumn(name = "roleId") })
 	@OrderBy("id")
 	private Set<SysRole> roles;
 
@@ -197,7 +197,8 @@ public class SysUser implements Serializable {
 	 */
 	public void setRoleIds() {
 		roleIds.clear();
-//		roleIds = new ArrayList<>();
+		if(roles ==  null)
+			return;
 		for (SysRole role : roles) {
 			roleIds.add(role.getId());
 		}

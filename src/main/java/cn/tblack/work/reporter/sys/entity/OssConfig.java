@@ -127,9 +127,6 @@ public class OssConfig implements Serializable{
 	public void setType(OssType type) {
 		this.type = type;
 	}
-	public void setType(int type) {
-		this.type = OssType.valueOf(type);
-	}
 
 	@Override
 	public String toString() {

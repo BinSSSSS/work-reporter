@@ -2,10 +2,10 @@ package cn.tblack.work.reporter.quartz.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.quartz.entity.ScheduleJob;
 
 
@@ -45,5 +45,5 @@ public interface ScheduleJobService {
 
 	void deleteAll();
 
-	Page<ScheduleJob> findAll(Pageable pageable);
+	LaYuiPage<ScheduleJob> findAll(Pageable pageable);
 }

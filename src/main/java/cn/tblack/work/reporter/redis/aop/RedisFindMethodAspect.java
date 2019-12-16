@@ -23,7 +23,7 @@ public class RedisFindMethodAspect {
 	private RedisUtils redisUtils;
 	
 	
-	@Pointcut("execution(* cn.tblack.work.reporter.*.service.*.*.find*(..)) or "
+	@Pointcut("execution(* cn.tblack.work.reporter.*.service.*.*.find*(..)) || "
 			+ "execution(* cn.tblack.work.reporter.*.service.*.*.fuzzy*(..))")
 	public void pointcut() {
 		

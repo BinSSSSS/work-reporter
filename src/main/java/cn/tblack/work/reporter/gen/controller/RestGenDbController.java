@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,10 +56,8 @@ public class RestGenDbController {
 
 			Pageable pageable = PageRequest.of(page - 1, limit);
 
-			Page<SysGenDb> pageImpl = genDbService.findAll(pageable);
-
-			dbPage = new LaYuiPage<>(pageImpl);
-
+			dbPage = genDbService.findAll(pageable);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("查询SysGenDb分页列表出错，出错原因为: " + e.getMessage());

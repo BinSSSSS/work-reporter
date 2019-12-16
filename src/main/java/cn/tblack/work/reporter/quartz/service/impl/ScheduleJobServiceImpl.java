@@ -3,12 +3,12 @@ package cn.tblack.work.reporter.quartz.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.quartz.dao.ScheduleJobDao;
 import cn.tblack.work.reporter.quartz.entity.ScheduleJob;
 import cn.tblack.work.reporter.quartz.service.ScheduleJobService;
@@ -106,8 +106,8 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
 	}
 
 	@Override
-	public Page<ScheduleJob> findAll(Pageable pageable) {
-		return shceduleJobDao.findAll(pageable);
+	public LaYuiPage<ScheduleJob> findAll(Pageable pageable) {
+		return new LaYuiPage<ScheduleJob>(shceduleJobDao.findAll(pageable));
 	}
 
 	

@@ -3,12 +3,12 @@ package cn.tblack.work.reporter.sys.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.sys.dao.SysGenTempDao;
 import cn.tblack.work.reporter.sys.entity.SysGenTemp;
 import cn.tblack.work.reporter.sys.service.SysGenTempService;
@@ -117,13 +117,13 @@ public class SysGenTempServiceImpl implements SysGenTempService {
 	}
 
 	@Override
-	public Page<SysGenTemp> findAll(Pageable pageable) {
-		return sysGenTempDao.findAll(pageable);
+	public LaYuiPage<SysGenTemp> findAll(Pageable pageable) {
+		return new LaYuiPage<SysGenTemp>(sysGenTempDao.findAll(pageable));
 	}
 
 	@Override
-	public Page<SysGenTemp> findAllByStyleId(String styleId, Pageable pageable) {
-		return sysGenTempDao.findAllByStyleId(styleId,pageable);
+	public LaYuiPage<SysGenTemp> findAllByStyleId(String styleId, Pageable pageable) {
+		return new LaYuiPage<SysGenTemp>(sysGenTempDao.findAllByStyleId(styleId,pageable));
 	}
 
 	@Override

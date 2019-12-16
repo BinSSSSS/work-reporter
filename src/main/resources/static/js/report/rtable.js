@@ -71,7 +71,7 @@ var vm = new Vue({
 
 			$.ajax({
 				type : "POST",
-				url : rootPath + "/report/rtemplate_do/getOptionlist",
+				url : rootPath + "/report/rtemplate/getOptionlist",
 				// contentType : "application/json",
 				// data : JSON.stringify(vm.rtable),
 				dataType : "json",

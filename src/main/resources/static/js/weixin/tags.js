@@ -27,15 +27,9 @@ var vm = new Vue({
             vm.showList = false;
             vm.tags.id = jobId;
             vm.tags.name = tagsname;
-            // $.get(rootPath + "/weixin/tags/info.do?jobId=" + jobId,
-            // function(r) {
-            // vm.showList = false;
-            // vm.title = "修改";
-            // vm.tags = r.tags;
-            // });
         },
         saveOrUpdate : function(event) {
-            var url = vm.tags.id == null ? rootPath + '/weixin/tags/create.do' : rootPath + '/weixin/tags/update.do';
+            var url = vm.tags.id == null ? rootPath + '/wechat/tags/create' : rootPath + '/wechat/tags/update';
             $.ajax({
                 type : "POST",
                 url : rootPath + url,
@@ -55,7 +49,7 @@ var vm = new Vue({
             confirm('确定要删除选中的记录？', function() {
                 $.ajax({
                     type : "POST",
-                    url : rootPath + "/weixin/tags/remove.do",
+                    url : rootPath + "/wechat/tags/remove",
                     // contentType : "application/json",
                     data : {
                         ids : jobIds
@@ -74,7 +68,7 @@ var vm = new Vue({
                 table.render({
                     elem : '#tagtable' // 选定是那个DIV
                     ,
-                    url : rootPath + '/weixin/tags/list.do',
+                    url : rootPath + '/wechat/tags/page-list',
                     cols : [
                         [
                             {

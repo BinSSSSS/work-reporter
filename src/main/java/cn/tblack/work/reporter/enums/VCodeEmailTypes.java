@@ -15,22 +15,22 @@ public enum VCodeEmailTypes implements PersistEnum2DB<Integer> {
 	/** 用于消费使用的验证码 */
 	PAY_CODE(5,"消费验证码");
 
-	int type;
+	Integer type;
 	String value;
 
-	private VCodeEmailTypes(int type,String value) {
+	private VCodeEmailTypes(Integer type,String value) {
 		this.type = type;
 		this.value =  value;
 	}
 
-	public int getType() {
+	public Integer getType() {
 		return type;
 	}
 	public String getValue() {
 		return value;
 	}
 
-	public static VCodeEmailTypes valueOf(int type) {
+	public static VCodeEmailTypes valueOf(Integer type) {
 
 		VCodeEmailTypes[] types = VCodeEmailTypes.values();
 

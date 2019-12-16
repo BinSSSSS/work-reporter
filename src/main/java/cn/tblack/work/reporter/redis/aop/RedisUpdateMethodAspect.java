@@ -22,9 +22,13 @@ public class RedisUpdateMethodAspect {
 	@Autowired
 	private RedisUtils redisUtils;
 	
-	@Pointcut("execution (* cn.tblack.work.reporter.*.service.*.*.update*(..)) or "
-			+ "execution (* cn.tblack.work.reporter.*.service.*.*.save(..)) or "
-			+ "execution (* cn.tblack.work.reporter.*.service.*.*.delete*(..))")
+	@Pointcut("execution (* cn.tblack.work.reporter.*.service.*.*.update*(..)) || "
+			+ "execution (* cn.tblack.work.reporter.*.service.*.*.save*(..)) || "
+			+ "execution (* cn.tblack.work.reporter.*.service.*.*.delete*(..)) || "
+			+ "execution (* cn.tblack.work.reporter.*.service.*.*.remove*(..)) || "
+			+ "execution (* cn.tblack.work.reporter.*.service.*.*.revoke*(..)) || "
+			+ "execution (* cn.tblack.work.reporter.*.service.*.*.grant*(..)) || "
+			+ "execution (* cn.tblack.work.reporter.*.service.*.*.flush*(..))")
 	public void pointcut() {
 		
 	}

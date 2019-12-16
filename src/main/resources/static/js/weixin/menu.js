@@ -25,7 +25,7 @@ var vm = new Vue({
     methods : {
         getMenu : function(menuId) {
             // 加载菜单树
-            $.get(rootPath + "/wechat/menu/select.do", function(r) {
+            $.get(rootPath + "/wechat/menu/list", function(r) {
                 ztree = $.fn.zTree.init($("#menuTree"), setting, r.menuList);
                 var node = ztree.getNodeByParam("id", vm.weixinmenu.parentid);
                 ztree.selectNode(node);
@@ -53,7 +53,7 @@ var vm = new Vue({
             if (menuId == null) {
                 return;
             }
-            $.get(rootPath + "/wechat/menu/get.do?id=" + menuId, function(r) {
+            $.get(rootPath + "/wechat/menu/get?id=" + menuId, function(r) {
                 vm.showList = false;
                 vm.title = "修改";
                 vm.weixinmenu = r.weixinbutton;
@@ -68,7 +68,7 @@ var vm = new Vue({
             confirm('确定要删除选中的记录？', function() {
                 $.ajax({
                     type : "POST",
-                    url : rootPath + "/wechat/menu/remove.do",
+                    url : rootPath + "/wechat/menu/remove",
                     data : {
                         id : menuId
                     },
@@ -80,7 +80,7 @@ var vm = new Vue({
             });
         },
         saveOrUpdate : function(event) {
-            var url = vm.weixinmenu.id == null ? "/wechat/menu/create.do" : "/wechat/menu/update.do";
+            var url = vm.weixinmenu.id == null ? "/wechat/menu/create" : "/wechat/menu/update";
             $.ajax({
                 type : "POST",
                 url : rootPath + url,
@@ -119,7 +119,7 @@ var vm = new Vue({
             Menu.table.refresh();
         },
         save : function() {
-            var url = "/wechat/menu/save.do";
+            var url = "/wechat/menu/save";
             $.ajax({
                 type : "POST",
                 url : rootPath + url,
@@ -129,7 +129,7 @@ var vm = new Vue({
                 }
             });
         },cleanmenu:function(){
-            var url = "/wechat/menu/cleanmenu.do";
+            var url = "/wechat/menu/cleanmenu";
             $.ajax({
                 type : "POST",
                 url : rootPath + url,

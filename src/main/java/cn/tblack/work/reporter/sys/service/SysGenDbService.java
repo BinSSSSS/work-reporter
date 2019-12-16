@@ -2,10 +2,10 @@ package cn.tblack.work.reporter.sys.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.service.AbstractDBService;
 import cn.tblack.work.reporter.sys.entity.SysGenDb;
 
@@ -53,5 +53,5 @@ public interface SysGenDbService extends AbstractDBService<String>{
 	 */
 	List<SysGenDb> selectByDbName(String dbName, boolean isBlur);
 
-	Page<SysGenDb> findAll(Pageable pageable);
+	LaYuiPage<SysGenDb> findAll(Pageable pageable);
 }

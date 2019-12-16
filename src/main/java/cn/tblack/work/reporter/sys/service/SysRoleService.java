@@ -56,4 +56,5 @@ public interface SysRoleService extends AbstractDBService<String>{
 	 * @return
 	 */
 	List<SysRole> fuzzyFindByRoleName(String roleName);
+	
 }

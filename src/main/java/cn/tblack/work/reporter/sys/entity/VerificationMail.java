@@ -49,54 +49,68 @@ public class VerificationMail implements Serializable{
 	@Convert(converter = VCodeEmailTypes.Converter.class)
 	private VCodeEmailTypes type;  //表示发送邮件的类型
 
+
 	public Integer getId() {
 		return id;
 	}
+
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
+
+	public String getRecipientMail() {
+		return recipientMail;
+	}
+
+
+	public void setRecipientMail(String recipientMail) {
+		this.recipientMail = recipientMail;
+	}
+
+
 	public Date getCreateTime() {
 		return createTime;
 	}
+
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+
 	public String getCode() {
 		return code;
 	}
+
 
 	public void setCode(String code) {
 		this.code = code;
 	}
 
+
 	public Date getDeadline() {
 		return deadline;
 	}
+
 
 	public void setDeadline(Date deadline) {
 		this.deadline = deadline;
 	}
 
+
 	public Long getWeights() {
 		return weights;
 	}
 
+
 	public void setWeights(Long weights) {
 		this.weights = weights;
 	}
-	
-	public String getRecipientMail() {
-		return recipientMail;
-	}
-	public void setRecipientMail(String recipientMail) {
-		this.recipientMail = recipientMail;
-	}
-	
-	public VCodeEmailTypes getEmailType() {
+
+
+	public VCodeEmailTypes getType() {
 		return type;
 	}
 
@@ -105,7 +119,7 @@ public class VerificationMail implements Serializable{
 		this.type = type;
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return "VerificationMail [id=" + id + ", recipientMail=" + recipientMail + ", createTime=" + createTime

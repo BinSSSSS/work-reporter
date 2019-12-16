@@ -1,12 +1,14 @@
 package cn.tblack.work.reporter.sys.service.impl;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.sys.dao.OssConfigDao;
 import cn.tblack.work.reporter.sys.entity.OssConfig;
 import cn.tblack.work.reporter.sys.service.OssConfigService;
@@ -105,8 +107,8 @@ public class OssConfigServiceImpl implements OssConfigService {
 	}
 
 	@Override
-	public Page<OssConfig> findAll(Pageable pageable) {
-		return ossConfigDao.findAll(pageable);
+	public LaYuiPage<OssConfig> findAll(Pageable pageable) {
+		return new LaYuiPage<OssConfig>(ossConfigDao.findAll(pageable));
 	}
 
 }

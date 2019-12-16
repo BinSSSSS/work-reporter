@@ -7,17 +7,7 @@ var vm = new Vue({
                 newPassword : ""
             },
             methods : {
-//                boundinfo : function() {
-//                    $.ajax({
-//                        type : "GET",
-//                        url : rootPath + "/thirdoartlogin_do/boundinfo.do",
-//                        dataType : "json",
-//                        success : function(data) {
-//                            vm.items = data.list;
-//                            
-//                        }
-//                    });
-//                },
+
                 toupdatepwd : function() {
                     $("#passwordLayer").css("display", 'block');
                 },
@@ -46,12 +36,12 @@ var vm = new Vue({
                                     data : {
                                         password : vm.password,
                                         newPassword : vm.newPassword,
-                                        vrifyCode : $("#vrifyCode").val()
+                                        vcode : $("#vcode").val()
                                     },
                                     dataType : "json",
                                     success : function(data) {
                                         alert(data.msg);
-                                        $("#vrifyCode_modifypwd").attr("src", '/kaptcha?d=' + new Date() * 1);
+                                        $("#vrifyCode_modifypwd").attr("src", '/kaptcha?id=' + new Date() * 1);
                                     }
                                 });
                             }
@@ -59,34 +49,5 @@ var vm = new Vue({
                     });
                    
                 }
-//                    ,
-//                delsocial : function(pro,provideruserid) {
-//                    confirm('确定要删除关联？', function() {
-//                        $.ajax({
-//                            type : "POST",
-//                            url : rootPath + "/thirdoartlogin_do/delsocialbind.do",
-//                            dataType : "json",
-//                            data : {
-//                                providerid : pro,
-//                                provideruserid,provideruserid
-//                            },
-//                            success : function(data) {
-//                                layui.use('layer', function(){ 
-//                                  var  layer = layui.layer
-//                                    layer.closeAll(); 
-//                                });
-//                                alert(data.msg);
-//                                vm.boundinfo();
-//                                return false;
-//                            }
-//                        });
-//                        
-//                    });
-//                   
-//                },
-//                connected : function(pro) {
-//                    location.href = rootPath + "/connect/" + pro + "Connected";
-//                }
             }
         });
-//        vm.boundinfo();

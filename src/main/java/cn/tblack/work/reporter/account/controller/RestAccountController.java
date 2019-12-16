@@ -9,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import cn.tblack.work.reporter.annotation.HasAnyRole;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.service.SysUserService;
 import cn.tblack.work.reporter.util.MD5Utils;
+import cn.tblack.work.reporter.util.VerifyCodeUtils;
 
 @RestController
 @RequestMapping("/account")
@@ -30,12 +33,27 @@ public class RestAccountController {
 	
 	@RequestMapping("/change-password")
 	public WebResult changePassword(Authentication auth,String password, String newPassword,
+			@RequestParam("vcode") String vcode,
+			@SessionAttribute(VerifyCodeUtils.VCODE_NAME) String sessionVCode,
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		WebResult result  = new WebResult();
 		
-		SysUser user = userService.findByUsername(auth.getName());
+		if(vcode == null || vcode.equalsIgnoreCase(sessionVCode)) {
+			result.setMsg("验证码不正确或已经失效");
+			result.setSuccess(false);
+			return result;
+		}
 		try {
+			
+			SysUser user = userService.findByUsername(auth.getName());
+			
+			if(user == null) {
+				result.setMsg("第三方登录用户不支持修改密码");
+				result.setSuccess(false);
+				return result;
+			}
+			
 			//如果原始密码和当前传递进来的密码相同的时候。才进行密码的修改。
 			if(user.getPassword().equals(MD5Utils.encrypt(password))) {
 				userService.updatePassword(user,newPassword);
