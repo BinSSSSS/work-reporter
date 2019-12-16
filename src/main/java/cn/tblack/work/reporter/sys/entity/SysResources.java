@@ -16,6 +16,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.tblack.work.reporter.constant.DataBaseBeanNames;
 
 @Entity
@@ -25,9 +27,10 @@ public class SysResources implements Serializable {
 	@Id
 	private String id;
 
+	@JsonIgnore		//解决异常报错:Could not read JSON: failed to lazily initialize a collection, could not initialize proxy 
 	@ManyToMany(targetEntity = SysRole.class, fetch = FetchType.EAGER,
-			// 级联实体持久化操作和级联实体合并操作
-			cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+			// 级联实体删除操作
+			cascade = {CascadeType.REMOVE})
 
 	// 级联查询通过外键进行操作,inverseJoinColumns表示的就是外键
 	@JoinTable(name = "sys_res_role", joinColumns = { @JoinColumn(name = "res_id") }, inverseJoinColumns = {

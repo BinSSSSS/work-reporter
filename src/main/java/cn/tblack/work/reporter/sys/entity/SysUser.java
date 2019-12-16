@@ -20,6 +20,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.tblack.work.reporter.constant.DataBaseBeanNames;
 import cn.tblack.work.reporter.util.excel.ExcelVOAttribute;
 
@@ -55,6 +57,7 @@ public class SysUser implements Serializable {
 	@Column(name = "is_delete")
 	private Integer isDelete;
 
+	@JsonIgnore
 	@ManyToMany(targetEntity = SysRole.class, fetch = FetchType.EAGER,
 			// 级联实体持久化操作和级联实体合并操作
 			cascade = { CascadeType.PERSIST, CascadeType.MERGE })

@@ -13,20 +13,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import cn.tblack.work.reporter.enums.VCodeEmailTypes;
 import cn.tblack.work.reporter.quartz.dao.ScheduleJobDao;
+import cn.tblack.work.reporter.quartz.entity.Reminder;
 import cn.tblack.work.reporter.quartz.entity.ScheduleJob;
 import cn.tblack.work.reporter.quartz.service.MailSenderService;
 import cn.tblack.work.reporter.quartz.service.ReminderService;
+import cn.tblack.work.reporter.redis.util.RedisUtils;
 import cn.tblack.work.reporter.sys.dao.SysConfigDao;
 import cn.tblack.work.reporter.sys.dao.SysGenDao;
 import cn.tblack.work.reporter.sys.entity.SysConfig;
 import cn.tblack.work.reporter.sys.entity.SysTable;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.entity.VerificationMail;
+import cn.tblack.work.reporter.sys.service.SysUserService;
 import cn.tblack.work.reporter.sys.service.VerificationMailService;
 
 @ConditionalOnProperty(prefix = "web.test-controller", name = "enable")
@@ -53,10 +57,11 @@ public class TestController {
 	@Autowired
 	private VerificationMailService vMailService;
 
+	@Autowired
+	private RedisUtils redisUtils;
 	
-	
-//	@Autowired
-//	private SysUserService userService;
+	@Autowired
+	private SysUserService userService;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -208,4 +213,34 @@ public class TestController {
 		return restTemplate.getForObject("http://localhost:7777/getmap", String.class);
 	}
 	
+	@RequestMapping("/findAll")
+	@ResponseBody
+	public List<SysUser> findAllUser(){
+		
+		return  userService.findAll();
+	}
+	
+	@RequestMapping("/putkey")
+	public String putKey() {
+		
+		redisUtils.putKey("1", "2");
+		
+		return "putkey";
+	}
+	
+	
+	@RequestMapping("/findrm")
+	@ResponseBody
+	public List<Reminder> findReminder(){
+		
+		return reminderService.findAll();
+	}
+	
+	@RequestMapping("/uprm")
+	public String updateRm() {
+		
+		reminderService.updateDeprecated(3, (short) 1);
+		
+		return "update";
+	}
 }

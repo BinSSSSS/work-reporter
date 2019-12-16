@@ -3,27 +3,33 @@ package cn.tblack.work.reporter.sys.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import cn.tblack.work.reporter.sys.dao.SysUserDao;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.service.SysUserService;
 import cn.tblack.work.reporter.util.MD5Utils;
 
-
+import static cn.tblack.work.reporter.constant.RedisCacheBeanDefinition.REDIS_CACHE_KEY_GENERATOR;
+import static cn.tblack.work.reporter.constant.RedisCacheBeanDefinition.REDIS_CACHE_MANAGER;;
 @Service
 @Transactional
+@CacheConfig(keyGenerator = REDIS_CACHE_KEY_GENERATOR,cacheManager = REDIS_CACHE_MANAGER, 
+	cacheNames = "SysUser")
 public class SysUserServiceImpl implements SysUserService {
 
 	@Autowired
 	private SysUserDao sysUserDao;
 	
 	@Override
+	@Cacheable(value = "findAll")
 	public List<SysUser> findAll() {
+	
 		return sysUserDao.findAll();
 	}
 
