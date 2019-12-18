@@ -7,30 +7,38 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.tblack.work.reporter.annotation.HasAnyRole;
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysGenDb;
 import cn.tblack.work.reporter.sys.service.SysGenDbService;
 import cn.tblack.work.reporter.util.DatabaseTableIdGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
-@HasAnyRole
+@Api(tags = "生成数据源管理控制器")
 @RestController
 @RequestMapping("/gen-db")
+@NeedAnyRole
 public class RestGenDbController {
 
 	private static Logger log = LoggerFactory.getLogger(RestGenDbController.class);
 
 	@Autowired
 	private SysGenDbService genDbService;
-
-	@PostMapping(value = "/select-list")
+	
+	@ApiOperation(value = "拿到所有的生成数据源列表")
+	@RequestMapping(value = "/select-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public List<SysGenDb> selectAllGenStyle(@RequestParam(name = "searchText", defaultValue = "") String searchText) {
 
 		List<SysGenDb> genDbList = null;
@@ -43,15 +51,16 @@ public class RestGenDbController {
 
 		return genDbList;
 	}
-
-	@RequestMapping(value = "/page-list")
+	
+	@ApiOperation(value = "拿到所有的生成数据源分页信息")
+	@RequestMapping(value = "/page-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public LaYuiPage<SysGenDb> getPageList(@RequestParam(name = "page", defaultValue = "1") Integer page,
 			@RequestParam(name = "limit", defaultValue = "10") Integer limit,
 			@RequestParam(name = "dbName", defaultValue = "") String dbName) {
 
 		LaYuiPage<SysGenDb> dbPage = null;
 
-		log.info("进行分页查询");
+//		log.info("进行分页查询");
 		try {
 
 			Pageable pageable = PageRequest.of(page - 1, limit);
@@ -66,13 +75,18 @@ public class RestGenDbController {
 		return dbPage;
 
 	}
-
-	@RequestMapping(value = "/create")
+	
+	
+	@ApiOperation(value = "创建一个生成数据源",consumes = "application/json")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "genDb", value = "生成数据源信息", dataTypeClass = SysGenDb.class, required = true)
+	})
+	@PostMapping(value = "/create")
 	public WebResult createDatabase(@RequestBody SysGenDb genDb) {
 
 		WebResult result = new WebResult();
 
-		log.info("传递的SysGenDb信息为: " + genDb);
+//		log.info("传递的SysGenDb信息为: " + genDb);
 
 		try {
 			// 需要生成一个随机性的id
@@ -91,13 +105,17 @@ public class RestGenDbController {
 
 		return result;
 	}
-
-	@RequestMapping(value = "/update")
+	
+	@ApiOperation(value = "更新一个生成数据源",consumes = "application/json")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "genDb", value = "生成数据源信息", dataTypeClass = SysGenDb.class, required = true)
+	})
+	@PostMapping(value = "/update")
 	public WebResult updateTemplate(@RequestBody SysGenDb genDb) {
 
 		WebResult result = new WebResult();
 
-		log.info("传递的genDb信息为: " + genDb);
+//		log.info("传递的genDb信息为: " + genDb);
 		try {
 
 			SysGenDb orgGenDb = genDbService.findById(genDb.getId());
@@ -124,8 +142,10 @@ public class RestGenDbController {
 		return result;
 
 	}
-
-	@RequestMapping(value = "/delete")
+	
+	@ApiOperation(value = "删除多个生成数据源")
+	@ApiImplicitParam(name ="ids", value = "多个数据源id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/delete")
 	public WebResult deleteTemplate(String ids) {
 
 		WebResult result = new WebResult();
@@ -150,8 +170,10 @@ public class RestGenDbController {
 
 		return result;
 	}
-
-	@RequestMapping(value = "/get")
+	
+	@ApiOperation(value = "拿到生成数据源信息")
+	@ApiImplicitParam(name ="id", value = "数据源id", dataTypeClass = String.class, required = true)
+	@GetMapping(value = "/get")
 	public SysGenDb getTemplate(String id) {
 
 		SysGenDb genDatabase = null;

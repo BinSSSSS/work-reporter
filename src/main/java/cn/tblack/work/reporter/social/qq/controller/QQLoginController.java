@@ -1,5 +1,9 @@
 package cn.tblack.work.reporter.social.qq.controller;
 
+import static cn.tblack.work.reporter.constant.RequestAttributeNames.AVATAR_URL;
+import static cn.tblack.work.reporter.constant.RequestAttributeNames.OPENID;
+import static cn.tblack.work.reporter.constant.RequestAttributeNames.SOCIAL_PLATFORM;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.tblack.work.reporter.social.auth.SocialLoginAuthentication;
@@ -20,8 +26,10 @@ import cn.tblack.work.reporter.social.qq.model.QQUserInfo;
 import cn.tblack.work.reporter.social.qq.service.QQAuthService;
 import cn.tblack.work.reporter.sys.entity.TempUser;
 import cn.tblack.work.reporter.sys.service.TempUserService;
-
-import static cn.tblack.work.reporter.constant.RequestAttributeNames.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+@Api(tags = "第三方QQ登录控制器")
 @Controller
 @RequestMapping("/social/qq")
 public class QQLoginController {
@@ -39,7 +47,8 @@ public class QQLoginController {
 	 * @~_~_~QQ登陆页面
 	 * @return
 	 */
-	@RequestMapping("/login.html")
+	@ApiOperation(value = "QQ登录页面")
+	@GetMapping("/login.html")
 	public String loginFace() {
 		
 		return  "redirect:"  + qqAuthService.getAuthorizationUrl();
@@ -50,12 +59,14 @@ public class QQLoginController {
 	 * @_!_!处理QQ登录链接之后返回的用户信息。
 	 * @return
 	 */
-	@RequestMapping(value = "/callback")
+	@ApiOperation(value = "QQ登录之后的回调处理")
+	@ApiImplicitParam(name = "code", value = "code" ,dataTypeClass = String.class, required = true)
+	@RequestMapping(value = "/callback",method = {RequestMethod.POST,RequestMethod.GET})
 	public String qqLoginCallback(@RequestParam(value = "code",required = true)String code,
 			HttpServletRequest request) {
 		
 		
-		log.info("进行QQ登录的回调");
+//		log.info("进行QQ登录的回调");
 		
 		try {
 			//通过返回的code对象进行处理

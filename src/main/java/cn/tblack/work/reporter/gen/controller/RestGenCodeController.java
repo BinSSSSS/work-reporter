@@ -20,9 +20,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.constant.DataBaseBeanNames;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.result.WebResult;
@@ -33,9 +35,15 @@ import cn.tblack.work.reporter.sys.service.SysColumnService;
 import cn.tblack.work.reporter.sys.service.SysGenService;
 import cn.tblack.work.reporter.sys.service.SysGenTempService;
 import cn.tblack.work.reporter.sys.service.SysTableService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "代码生成工具控制器")
 @RestController
 @RequestMapping("/gen-code")
+@NeedAnyRole
 public class RestGenCodeController {
 
 	private static Logger log = LoggerFactory.getLogger(RestGenCodeController.class);
@@ -59,7 +67,8 @@ public class RestGenCodeController {
 	 * @param schemaName
 	 * @return
 	 */
-	@RequestMapping(value = "/table-list")
+	@ApiOperation(value = "拿到指定数据库的全部表名")
+	@RequestMapping(value = "/table-list",method = {RequestMethod.GET,RequestMethod.POST})
 	public LaYuiPage<SysTable> getGenCodeList(@RequestParam(name = "limit", defaultValue = "10") Integer pageSize,
 			@RequestParam(name = "page", defaultValue = "1") Integer curPage,
 			@RequestParam(name = "schemaName", defaultValue = "") String schemaName,
@@ -67,7 +76,7 @@ public class RestGenCodeController {
 
 		LaYuiPage<SysTable> genCodePage = new LaYuiPage<>();
 		
-		log.info("传递的数据库名称为:" +  schemaName);
+//		log.info("传递的数据库名称为:" +  schemaName);
 		try {
 
 			List<SysTable> tableList = null;
@@ -93,11 +102,12 @@ public class RestGenCodeController {
 		}
 		return genCodePage;
 	}
-
+	
+	@ApiOperation(value = "拿到代码生成配置")
 	@PostMapping(value = "/settings")
 	public Map<String, Object> getSettings() {
 
-		log.info("配置的读取");
+//		log.info("配置的读取");
 		Map<String, Object> map = new HashMap<>();
 		try {
 			List<SysGen> genList = genService.findAll();
@@ -113,6 +123,7 @@ public class RestGenCodeController {
 		return map;
 	}
 	
+	@ApiOperation(value = "更新代码生成配置")
 	@PostMapping(value = "/update-settings")
 	public WebResult updateSettings(HttpServletRequest request) {
 		
@@ -148,13 +159,18 @@ public class RestGenCodeController {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	@RequestMapping(value = "/code")
+	@ApiOperation(value = "生成代码")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "tableName", value = "表名",dataTypeClass = String.class, required = true),
+		@ApiImplicitParam(name = "schemaName", value = "数据库名",dataTypeClass = String.class, required = true)
+	})
+	@PostMapping(value = "/code")
 	public void generatorCode(@RequestParam("tableName") String tableName,
 			@RequestParam("schemaName") String schemaName, HttpServletResponse response) throws IOException, IllegalAccessException, InvocationTargetException {
 
 		List<SysTable> tableList = new ArrayList<>();
 
-		log.info("传递的tableName为: " + tableName);
+//		log.info("传递的tableName为: " + tableName);
 		
 		try {
 			String[] tableNameArr =  tableName.split(",");
@@ -186,6 +202,5 @@ public class RestGenCodeController {
 		}
 		
 	}
-	
 	
 }

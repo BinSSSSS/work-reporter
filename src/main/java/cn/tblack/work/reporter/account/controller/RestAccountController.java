@@ -8,21 +8,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import cn.tblack.work.reporter.annotation.HasAnyRole;
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.service.SysUserService;
 import cn.tblack.work.reporter.util.MD5Utils;
 import cn.tblack.work.reporter.util.VerifyCodeUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 
+@Api(tags = "账户相关操作控制器")
 @RestController
 @RequestMapping("/account")
-@HasAnyRole
+@NeedAnyRole
 public class RestAccountController {
 	
 	private static Logger log = LoggerFactory.getLogger(RestAccountController.class);
@@ -30,9 +34,10 @@ public class RestAccountController {
 	@Autowired
 	private SysUserService userService;
 	
-	
-	@RequestMapping("/change-password")
-	public WebResult changePassword(Authentication auth,String password, String newPassword,
+	@ApiImplicitParam(value = "更新密码操作")
+	@PostMapping("/change-password")
+	public WebResult changePassword(Authentication auth,
+			String password, String newPassword,
 			@RequestParam("vcode") String vcode,
 			@SessionAttribute(VerifyCodeUtils.VCODE_NAME) String sessionVCode,
 			HttpServletRequest request, HttpServletResponse response) {

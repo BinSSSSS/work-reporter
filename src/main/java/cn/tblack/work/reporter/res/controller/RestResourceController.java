@@ -9,17 +9,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysResources;
 import cn.tblack.work.reporter.sys.service.SysResourcesService;
 import cn.tblack.work.reporter.util.DatabaseTableIdGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "菜单管理控制器") 
 @RestController
 //@HasAdminRole
 @RequestMapping("res")
+@NeedAnyRole
 public class RestResourceController {
 	
 	private static Logger log =  LoggerFactory.getLogger(RestResourceController.class);
@@ -27,7 +34,8 @@ public class RestResourceController {
 	@Autowired
 	private SysResourcesService resService;
 	
-	@RequestMapping(value = "res-list")
+	@ApiOperation(value = "菜单列表信息")
+	@RequestMapping(value = "res-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public List<SysResources> resourcesList(@RequestParam(name = "resUrl",defaultValue = "")String resUrl) {
 		
 		List<SysResources> resList =  null;
@@ -48,7 +56,9 @@ public class RestResourceController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/get")
+	@ApiOperation(value = "拿到菜单资源信息")
+	@ApiImplicitParam(name ="id", value = "菜单资源id", dataTypeClass = String.class, required = true)
+	@RequestMapping(value = "/get", method = {RequestMethod.POST,RequestMethod.GET})
 	public SysResources getResources(String id) {
 		
 		SysResources res = null;
@@ -78,12 +88,14 @@ public class RestResourceController {
 	 * @~___!_!更新指定资源的信息
 	 * @return
 	 */
+	@ApiOperation(value = "更新一个菜单资源",consumes = "application/json")
+	@ApiImplicitParam(name = "sysRes", value = "菜单资源信息", dataTypeClass = SysResources.class, required = true)
 	@PostMapping(value = "/update")
 	public WebResult updateResources(@RequestBody SysResources sysRes) {
 	
 		WebResult result = new WebResult();
 		
-		log.info("传递的更新资源信息为: " +  sysRes);
+//		log.info("传递的更新资源信息为: " +  sysRes);
 		
 		try { 
 			//更新资源-因为资源信息没有敏感信息， 可以直接进行更新
@@ -100,7 +112,8 @@ public class RestResourceController {
 		return result;
 	}
 	
-	
+	@ApiOperation(value = "删除多个菜单资源")
+	@ApiImplicitParam(name ="ids", value = "多个菜单资源id", dataTypeClass = String.class, required = true)
 	@PostMapping(value = "/delete")
 	public WebResult deleteResources(String resId) {
 		
@@ -125,12 +138,14 @@ public class RestResourceController {
 	 * @param res
 	 * @return
 	 */
+	@ApiOperation(value = "创建一个菜单资源",consumes = "application/json")
+	@ApiImplicitParam(name = "res", value = "菜单资源信息", dataTypeClass = SysResources.class, required = true)
 	@PostMapping(value = "/insert")
 	public WebResult addResources(@RequestBody SysResources res) {
 		
 		WebResult result = new WebResult();
 		
-		log.info("新添加的资源信息为: " +  res);
+//		log.info("新添加的资源信息为: " +  res);
 		
 		try {
 			res.setId(DatabaseTableIdGenerator.createResId(resService));

@@ -39,7 +39,12 @@ import cn.tblack.work.reporter.util.CodeGenerator;
 import cn.tblack.work.reporter.util.DatabaseTableIdGenerator;
 import cn.tblack.work.reporter.util.MD5Utils;
 import cn.tblack.work.reporter.util.WeightsUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "用户登录控制器")
 @RestController
 public class LoginController {
 
@@ -59,8 +64,13 @@ public class LoginController {
 
 	@Autowired
 	private EmailSender emailSender;
-
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	
+	@ApiOperation(value = "登陆操作")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "username",value = "用户名",dataTypeClass =  String.class, required =  true),
+		@ApiImplicitParam(name = "password",value = "密码",dataTypeClass =  String.class, required =  true)
+	})
+	@PostMapping(value = "/login")
 	public WebResult login(SysUser user, HttpServletRequest request) {
 
 		WebResult result = new WebResult();
@@ -91,10 +101,15 @@ public class LoginController {
 		return result;
 	}
 
+	@ApiOperation(value ="注册操作")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "user", value = "用户信息",dataTypeClass =  SysUser.class,required = true),
+		@ApiImplicitParam(name = "eCode", value = "邮箱验证码",dataTypeClass =  String.class,required = true)
+	})
 	@PostMapping(value = "/register")
 	public WebResult register(SysUser user, String eCode) {
 
-		log.info("创建的用户信息 为: " + user + ",邮件验证码为: " + eCode);
+//		log.info("创建的用户信息 为: " + user + ",邮件验证码为: " + eCode);
 		WebResult result = new WebResult();
 
 		// 在数据库中查询是否存在该用户和邮箱。 在前台每次填写完成之后，我们都会异步的进行检查是否存在该用户名或者是邮箱
@@ -145,7 +160,9 @@ public class LoginController {
 		return result;
 
 	}
-
+	
+	@ApiOperation(value = "发送邮箱验证码")
+	@ApiImplicitParam(name = "email", value = "邮箱地址", dataTypeClass =  String.class, required = true)
 	@PostMapping(value = "/send-ecode")
 	public WebResult sendEmailCode(@Email String email) {
 
@@ -216,7 +233,8 @@ public class LoginController {
 	 * @param vm
 	 * @return
 	 */
-	@RequestMapping(value = "/logout.html")
+	@ApiOperation(value = "注销操作")
+	@RequestMapping(value = "/logout.html",method = {RequestMethod.POST,RequestMethod.GET})
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response, Authentication auth,
 			ModelAndView vm) {
 		// 在SpringSecurity中对该用户做注销操作
@@ -230,6 +248,7 @@ public class LoginController {
 		return vm;
 	}
 
+	@ApiOperation(value =  "网站备案信息")
 	@RequestMapping(value = "/web_domain", method = RequestMethod.POST)
 	public String webSystemInfo() {
 

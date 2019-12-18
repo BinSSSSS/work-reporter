@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.enums.VCodeEmailTypes;
 import cn.tblack.work.reporter.quartz.dao.ScheduleJobDao;
 import cn.tblack.work.reporter.quartz.entity.Reminder;
@@ -32,9 +33,12 @@ import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.entity.VerificationMail;
 import cn.tblack.work.reporter.sys.service.SysUserService;
 import cn.tblack.work.reporter.sys.service.VerificationMailService;
+import io.swagger.annotations.Api;
 
 @ConditionalOnProperty(prefix = "web.test-controller", name = "enable")
 @RestController
+@Api(tags = "测试功能控制器",hidden =  true)
+@NeedAnyRole
 public class TestController {
 
 	private static Logger log = LoggerFactory.getLogger(TestController.class);

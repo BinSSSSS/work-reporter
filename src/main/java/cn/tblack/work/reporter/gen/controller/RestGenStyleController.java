@@ -7,13 +7,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.tblack.work.reporter.annotation.HasAnyRole;
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysGenStyle;
@@ -21,10 +23,16 @@ import cn.tblack.work.reporter.sys.entity.SysGenTemp;
 import cn.tblack.work.reporter.sys.service.SysGenStyleService;
 import cn.tblack.work.reporter.sys.service.SysGenTempService;
 import cn.tblack.work.reporter.util.DatabaseTableIdGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
-@HasAnyRole
+
+@Api(tags = "生成框架主题管理控制器")
 @RestController
 @RequestMapping("/gen-style")
+@NeedAnyRole
 public class RestGenStyleController {
 
 	private static Logger log = LoggerFactory.getLogger(RestGenStyleController.class);
@@ -34,8 +42,9 @@ public class RestGenStyleController {
 
 	@Autowired
 	private SysGenTempService templateService;
-	
-	@PostMapping(value = "/select-list")
+		
+	@ApiOperation(value = "拿到生成框架主题列表")
+	@RequestMapping(value = "/select-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public List<SysGenStyle> selectAllGenStyle(
 			@RequestParam(name = "searchText", defaultValue = "") String searchText) {
 
@@ -50,7 +59,8 @@ public class RestGenStyleController {
 		return genStyleList;
 	}
 	
-	@RequestMapping(value = "/page-list")
+	@ApiOperation(value = "拿到生成框架主题分页列表")
+	@RequestMapping(value = "/page-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public LaYuiPage<SysGenStyle> getPageList(@RequestParam(name = "page",defaultValue = "1") Integer page,
 			@RequestParam(name = "limit",defaultValue = "10")Integer limit,
 			@RequestParam(name = "dbName",defaultValue = "") String dbName){
@@ -71,12 +81,16 @@ public class RestGenStyleController {
 		return stylePage;
 		
 	}
-	@RequestMapping(value = "/create")
+	@ApiOperation(value = "创建一个生成主题框架",consumes = "application/json")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "style", value = "生成数据源信息", dataTypeClass = SysGenStyle.class, required = true)
+	})
+	@PostMapping(value = "/create")
 	public WebResult createDatabase(@RequestBody SysGenStyle style) {
 
 		WebResult result = new WebResult();
 
-		log.info("传递的SysGenStyle信息为: " + style);
+//		log.info("传递的SysGenStyle信息为: " + style);
 
 		try {
 			// 需要生成一个随机性的id
@@ -95,13 +109,17 @@ public class RestGenStyleController {
 
 		return result;
 	}
-
-	@RequestMapping(value = "/update")
+	
+	@ApiOperation(value = "更新生成框架主题",consumes = "application/json")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "style", value = "生成数据源信息", dataTypeClass = SysGenStyle.class, required = true)
+	})
+	@PostMapping(value = "/update")
 	public WebResult updateTemplate(@RequestBody SysGenStyle style) {
 
 		WebResult result = new WebResult();
 
-		log.info("传递的style信息为: " + style);
+//		log.info("传递的style信息为: " + style);
 		try {
 
 			SysGenStyle orgGenDb = genStyleService.findById(style.getId());
@@ -128,8 +146,9 @@ public class RestGenStyleController {
 		return result;
 
 	}
-
-	@RequestMapping(value = "/delete")
+	@ApiOperation(value = "删除多个生成主题框架")
+	@ApiImplicitParam(name ="ids", value = "多个生成主题框架id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/delete")
 	public WebResult deleteTemplate(String ids) {
 
 		WebResult result = new WebResult();
@@ -154,8 +173,10 @@ public class RestGenStyleController {
 
 		return result;
 	}
-
-	@RequestMapping(value = "/get")
+	
+	@ApiOperation(value = "拿到生成主题框架信息")
+	@ApiImplicitParam(name ="id", value = "生成主题框架id", dataTypeClass = String.class, required = true)
+	@GetMapping(value = "/get")
 	public SysGenStyle getTemplate(String id) {
 
 		SysGenStyle genStyle = null;
@@ -176,7 +197,9 @@ public class RestGenStyleController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/copy")
+	@ApiOperation(value = "拷贝该框架主题")
+	@ApiImplicitParam(name ="id", value = "生成主题框架id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/copy")
 	public WebResult copyStyele(String id) {
 		
 		WebResult result =  new WebResult();
@@ -221,7 +244,8 @@ public class RestGenStyleController {
 	}
 	
 	
-	@RequestMapping(value = "/template")
+	@ApiOperation(value = "生成代码实例模板")
+	@RequestMapping(value = "/template",method = {RequestMethod.GET,RequestMethod.POST})
 	public String getTemplate() {
 		return 
 				"package ${packageName}.entity;<br/>" + 

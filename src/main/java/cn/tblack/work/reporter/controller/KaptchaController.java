@@ -12,22 +12,22 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.tblack.work.reporter.util.Captcha;
 import cn.tblack.work.reporter.util.VerifyCodeUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "图片验证码绘制")
 @Controller
 public class KaptchaController {
 
-//	@Autowired
-//	private DefaultKaptcha kaptcha;
-
-	@RequestMapping("/kaptcha")
+	
+	@ApiOperation(value ="发送图片验证码",notes = "主要用于前端验证时图片验证码的绘制")
+	@RequestMapping(value = "/kaptcha",method = {RequestMethod.POST,RequestMethod.GET})
 	public void sendKaptcha(HttpServletRequest request, HttpServletResponse response,HttpSession session) throws IOException {
 
-//		String text = kaptcha.createText();
-//		BufferedImage image = kaptcha.createImage(text);
-		
 		Captcha captcha = Captcha.getInstance();
 		String code  = captcha.randomCode();
 		BufferedImage image = captcha.drawCheckImg(code);

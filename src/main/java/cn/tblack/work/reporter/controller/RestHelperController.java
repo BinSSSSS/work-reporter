@@ -20,8 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,6 +33,7 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.tblack.work.reporter.email.VMailContent;
 import cn.tblack.work.reporter.email.sender.EmailSender;
 import cn.tblack.work.reporter.enums.VCodeEmailTypes;
+import cn.tblack.work.reporter.properties.WebSystemProperties;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.entity.VerificationMail;
@@ -41,6 +44,10 @@ import cn.tblack.work.reporter.util.DateUtils;
 import cn.tblack.work.reporter.util.DesUtils;
 import cn.tblack.work.reporter.util.VerifyCodeUtils;
 import cn.tblack.work.reporter.util.WeightsUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @-=-一些帮助用户相关的方法控制器。-如忘记密码-账号查询等=-=
@@ -49,6 +56,7 @@ import cn.tblack.work.reporter.util.WeightsUtils;
  * @Date:2019年11月23日
  * @Version: 1.0(测试版)
  */
+@Api(tags = "无需权限的用户操作控制器")
 @RestController
 public class RestHelperController {
 
@@ -69,7 +77,12 @@ public class RestHelperController {
 	 * @param userToken
 	 * @return
 	 */
-	@RequestMapping("/password-forget")
+	@ApiOperation(value = "用于忘记密码的重置操作")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "userToken",value = "用户访问令牌",dataTypeClass = String.class,required = true),
+		@ApiImplicitParam(name = "vcode",value = "验证码",dataTypeClass = String.class,required = true)
+	})
+	@RequestMapping(value = "/password-forget",method = {RequestMethod.POST,RequestMethod.GET})
 	public WebResult forgetPassword(String userToken, String vcode, HttpServletRequest request) {
 
 		WebResult result = new WebResult();
@@ -185,6 +198,11 @@ public class RestHelperController {
 	 * @param mv
 	 * @return
 	 */
+	@ApiOperation(value = "重置密码页面")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name  = "token", value = "访问令牌", dataTypeClass = String.class, required = true),
+		@ApiImplicitParam(name  = "username", value = "重置密码的用户名", dataTypeClass = String.class, required = true)
+	})
 	@RequestMapping(value = "/password-reset.html", method = RequestMethod.GET)
 	public ModelAndView passwordResetPage(String token, String username, ModelAndView mv) {
 
@@ -242,7 +260,13 @@ public class RestHelperController {
 	 * @param mailCode
 	 * @return
 	 */
-	@RequestMapping(value = "/reset-password", method = RequestMethod.POST)
+	@ApiOperation(value = "重置密码操作")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "token",value = "访问令牌",dataTypeClass = String.class, required = true),
+		@ApiImplicitParam(name = "password",value = "新密码",dataTypeClass = String.class, required = true),
+		@ApiImplicitParam(name = "mailCode",value = "重置验证码",dataTypeClass = String.class, required = true)
+	})
+	@PostMapping(value = "/reset-password")
 	public WebResult resetPassword(String token, String password, String mailCode) {
 
 		WebResult result = new WebResult();
@@ -312,8 +336,13 @@ public class RestHelperController {
 	 * @throws IOException
 	 * @!_!生成二维码信息
 	 */
-	@RequestMapping(value = "/qrcode/gen")
-	public void genQRCode(String url, Integer width, Integer height, HttpServletResponse response) throws IOException {
+	@ApiOperation(value = "二维码的生成")
+	@RequestMapping(value = "/qrcode/gen",method = {RequestMethod.POST,RequestMethod.GET})
+	public void genQRCode(
+			@RequestParam(name = "url",defaultValue = WebSystemProperties.DAMAIN) String url,
+			@RequestParam(name = "width",defaultValue = "200") Integer width,
+			@RequestParam(name = "height",defaultValue = "200") Integer height, 
+			HttpServletResponse response) throws IOException {
 
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
 			url = "http://" + url;

@@ -22,8 +22,12 @@ public class WRUserDetailService implements UserDetailsService {
 	private SysUserDao sysUserDao;
 
 	@Autowired
+	private SysUserRoleService userRoleService;
+	
+	@Autowired
 	private CustomMD5PasswordEncoder passworEncoder;
 
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -36,7 +40,11 @@ public class WRUserDetailService implements UserDetailsService {
 		Set<SysRole> roles = user.getRoles();
 
 		Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-			
+		
+		//为了防止Redis缓存不会注入中间表关联字段，如果角色信息为空，则再次需要查找一次
+		if(roles == null || roles.isEmpty()){
+			roles =  userRoleService.findUserRoleByUserId(user.getId());
+		}
 		// 添加当前用户拥有的角色信息
 		for (SysRole role : roles) {
 			authorities.add(new SimpleGrantedAuthority(role.getRoleKey()));

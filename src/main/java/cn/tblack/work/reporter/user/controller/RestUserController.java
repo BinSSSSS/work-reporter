@@ -20,12 +20,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysUser;
@@ -33,6 +35,9 @@ import cn.tblack.work.reporter.sys.entity.SysUserRole;
 import cn.tblack.work.reporter.sys.service.SysUserRoleService;
 import cn.tblack.work.reporter.sys.service.SysUserService;
 import cn.tblack.work.reporter.util.excel.ExcelUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @--=^-^=-- 对于用户管理的操作
@@ -43,6 +48,8 @@ import cn.tblack.work.reporter.util.excel.ExcelUtil;
  */
 @RestController
 @RequestMapping("/user")
+@Api(tags = "用户管理控制器")
+@NeedAnyRole
 //@HasAdminRole
 public class RestUserController {
 
@@ -60,7 +67,8 @@ public class RestUserController {
 	 * @param pageSize
 	 * @return
 	 */
-	@RequestMapping(value = "/user-list")
+	@ApiOperation(value = "用户信息分页列表")
+	@RequestMapping(value = "/user-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public LaYuiPage<SysUser> userList(@RequestParam(name = "page", defaultValue = "0") Integer pageNo,
 			@RequestParam(name = "limit", defaultValue = "10") Integer pageSize,
 			@RequestParam(name = "searchText") String searchText) {
@@ -78,7 +86,9 @@ public class RestUserController {
 	 * @param ids
 	 * @return
 	 */
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ApiOperation(value = "删除多个用户")
+	@ApiImplicitParam(name ="ids", value = "多个用户id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/delete")
 	public WebResult deleteUser(String ids) {
 		WebResult result = new WebResult();
 
@@ -96,6 +106,8 @@ public class RestUserController {
 		try {
 			for (String id : delIds) {
 				try {
+					if(id.equals("01234"))
+						continue;
 					userService.deleteById(id);
 				} catch (Exception e) {
 					log.info("删除用户失败~用户id为: " + id + "，错误信息为: " + e.getMessage());
@@ -121,7 +133,7 @@ public class RestUserController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/get")
+	@RequestMapping(value = "/get",method = {RequestMethod.POST,RequestMethod.GET})
 	public SysUser getUser(String id) {
 
 		SysUser user = null;
@@ -147,7 +159,9 @@ public class RestUserController {
 		return user;
 	}
 
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@ApiOperation(value = "更新一个用户",consumes = "application/json")
+	@ApiImplicitParam(name = "user", value = "用户信息", dataTypeClass = SysUser.class, required = true)
+	@PostMapping(value = "/update")
 	public WebResult updateUser(@RequestBody SysUser user, HttpServletRequest request) {
 
 		WebResult result = new WebResult();
@@ -218,7 +232,7 @@ public class RestUserController {
 	/**
 	 * @~-~使用 excel 文件的方式将传递的用户信息进行导出并传递给前台进行下载。
 	 */
-	@RequestMapping(value = "/export")
+	@RequestMapping(value = "/export",method = {RequestMethod.POST,RequestMethod.GET})
 	public void exportUserByExcel(String searchText, HttpServletResponse response, HttpServletRequest request) {
 
 		try {

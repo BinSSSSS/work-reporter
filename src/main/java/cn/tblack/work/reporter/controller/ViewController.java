@@ -9,23 +9,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "用于无需要权限访问的视图控制器")
 @Controller
 public class ViewController {
 
 	private static Logger log = LoggerFactory.getLogger(ViewController.class);
 
-	@RequestMapping("/")
+	@ApiOperation(value = "系统根目录")
+	@GetMapping("/")
 	public String home() {
-		return "index.html";
+		return "/index.html";
 	}
-
-	@RequestMapping("/welcome.html")
+	
+	@ApiOperation(value = "登录成功之后的欢迎介绍页面")
+	@GetMapping("/welcome.html")
 	public String welcome(Authentication authentication) {
 
 		if (authentication == null)
-			return "redirect:login.html";
+			return "redirect:/login.html";
 
 		if (isAdminRole(authentication)) {
 			return "/admin/welcome.html";
@@ -33,13 +38,15 @@ public class ViewController {
 
 		return "/user/welcome.html";
 	}
-
-	@RequestMapping("/login.html")
+	
+	@ApiOperation(value = "登录页面")
+	@GetMapping("/login.html")
 	public String loginHtml() {
 		return "/login";
 	}
 
-	@RequestMapping("/index.html")
+	@ApiOperation(value = "/系统管理首页面")
+	@GetMapping("/index.html")
 	/**
 	 * @--需要通过当前用户的权限来进行返回某一个特定的index页面。 @return
 	 */
@@ -63,11 +70,6 @@ public class ViewController {
 
 		return "/index/other/index";
 
-	}
-
-	@RequestMapping(value = "/swagger-ui.html")
-	public String swagger() {
-		return "";
 	}
 
 	private boolean isAdminRole(Authentication authentication) {

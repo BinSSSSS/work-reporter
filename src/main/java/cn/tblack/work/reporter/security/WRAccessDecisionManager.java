@@ -36,7 +36,10 @@ public class WRAccessDecisionManager extends AbstractAccessDecisionManager {
 	public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
 			throws AccessDeniedException, InsufficientAuthenticationException {
 		
-//		log.info("访问权限开始验证: "  + authentication);
+		if(authentication == null) {
+			throw new AccessDeniedException("用户未登录~");
+		}
+		
 		// 检查用户是否够权限访问资源
 		// 参数authentication是从spring的全局缓存SecurityContextHolder中拿到的，里面是用户的权限信息
 		// 参数object是url

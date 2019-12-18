@@ -10,27 +10,33 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.tblack.work.reporter.annotation.HasAnyRole;
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysGenTemp;
 import cn.tblack.work.reporter.sys.service.SysGenTempService;
 import cn.tblack.work.reporter.util.DatabaseTableIdGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
-@HasAnyRole
+@Api(tags = "生成代码模板管理控制器")
 @RestController
 @RequestMapping("/gen-template")
+@NeedAnyRole
 public class RestGenTemplateController {
 
 	private static Logger log = LoggerFactory.getLogger(RestGenTemplateController.class);
 
 	@Autowired
 	private SysGenTempService templateService;
-
-	@PostMapping(value = "/select-list")
+	
+	@ApiOperation("拿到所有生成模板列表")
+	@RequestMapping(value = "/select-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public List<SysGenTemp> selectAllGenStyle(@RequestParam(name = "searchText", defaultValue = "") String searchText) {
 
 		List<SysGenTemp> genStyleList = null;
@@ -43,8 +49,9 @@ public class RestGenTemplateController {
 
 		return genStyleList;
 	}
-
-	@RequestMapping(value = "/page-list")
+	
+	@ApiOperation("拿到所有生成模板分页列表")
+	@RequestMapping(value = "/page-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public LaYuiPage<SysGenTemp> getTemplatePageList(@RequestParam(name = "page", defaultValue = "1") Integer page,
 			@RequestParam(name = "limit", defaultValue = "10") Integer limit,
 			@RequestParam(name = "styleId", defaultValue = "") String styleId) {
@@ -64,7 +71,9 @@ public class RestGenTemplateController {
 		return tempPage;
 	}
 
-	@RequestMapping(value = "/get")
+	@ApiOperation(value = "拿到生成代码模板信息")
+	@ApiImplicitParam(name ="id", value = "生成代码模板id", dataTypeClass = String.class, required = true)
+	@RequestMapping(value = "/get",method = {RequestMethod.POST,RequestMethod.GET})
 	public SysGenTemp getTemplate(String id) {
 
 		SysGenTemp template = null;
@@ -79,8 +88,10 @@ public class RestGenTemplateController {
 		}
 		return template;
 	}
-
-	@RequestMapping(value = "/create")
+	
+	@ApiOperation(value = "创建一个生成代码模板",consumes = "application/json")
+	@ApiImplicitParam(name = "template", value = "生成代码模板信息", dataTypeClass = SysGenTemp.class, required = true)
+	@PostMapping(value = "/create")
 	public WebResult createTemplate(@RequestBody SysGenTemp template) {
 
 		WebResult result = new WebResult();
@@ -104,8 +115,10 @@ public class RestGenTemplateController {
 
 		return result;
 	}
-
-	@RequestMapping(value = "/update")
+	
+	@ApiOperation(value = "更新一个生成代码模板",consumes = "application/json")
+	@ApiImplicitParam(name = "template", value = "生成代码模板信息", dataTypeClass = SysGenTemp.class, required = true)
+	@PostMapping(value = "/update")
 	public WebResult updateTemplate(@RequestBody SysGenTemp template) {
 
 		WebResult result = new WebResult();
@@ -137,8 +150,9 @@ public class RestGenTemplateController {
 		return result;
 
 	}
-
-	@RequestMapping(value = "/delete")
+	@ApiOperation(value = "删除多个生成代码模板")
+	@ApiImplicitParam(name ="ids", value = "多个生成代码模板id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/delete")
 	public WebResult deleteTemplate(String ids) {
 
 		WebResult result = new WebResult();

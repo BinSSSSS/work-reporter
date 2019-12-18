@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.email.sender.EmailSender;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.quartz.entity.Reminder;
@@ -26,6 +28,9 @@ import cn.tblack.work.reporter.schedule.ReminderScheduler;
 import cn.tblack.work.reporter.sys.entity.SysUser;
 import cn.tblack.work.reporter.sys.service.SysUserService;
 import cn.tblack.work.reporter.user.util.UserInjectionUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @__!_!用于进行提醒管理的控制器
@@ -33,8 +38,10 @@ import cn.tblack.work.reporter.user.util.UserInjectionUtils;
  * @Date:2019年12月10日
  * @Version: 1.0(测试版)
  */
+@Api(tags = "定时邮件提醒管理控制器")
 @RestController
 @RequestMapping("/reminder/email")
+@NeedAnyRole
 public class RestReminderController {
 
 	private static Logger log = LoggerFactory.getLogger(RestReminderController.class);
@@ -57,14 +64,15 @@ public class RestReminderController {
 	@Autowired
 	private UserInjectionUtils userInjectionUtils;
 
-	@RequestMapping(value = "/page-list")
+	@ApiOperation("定时邮件提醒分页列表")
+	@RequestMapping(value = "/page-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public LaYuiPage<Reminder> getPageList(@RequestParam(name = "page", defaultValue = "1") Integer page,
 			@RequestParam(name = "limit", defaultValue = "10") Integer limit,
 			@RequestParam(name = "dbName", defaultValue = "") String dbName) {
 
 		LaYuiPage<Reminder> reminderPage = null;
 
-		log.info("进行分页查询");
+//		log.info("进行分页查询");
 		try {
 
 			Pageable pageable = PageRequest.of(page - 1, limit);
@@ -82,13 +90,15 @@ public class RestReminderController {
 		return reminderPage;
 
 	}
-
-	@RequestMapping(value = "/update")
+	
+	@ApiOperation(value = "更新一个邮件提醒",consumes = "application/json")
+	@ApiImplicitParam(name = "reminder", value = "邮件提醒信息", dataTypeClass = Reminder.class, required = true)
+	@PostMapping(value = "/update")
 	public WebResult updateTemplate(@RequestBody Reminder reminder) {
 
 		WebResult result = new WebResult();
 
-		log.info("传递的reminder信息为: " + reminder);
+//		log.info("传递的reminder信息为: " + reminder);
 		try {
 
 			Reminder orgReminder = reminderService.findById(reminder.getId());
@@ -106,7 +116,7 @@ public class RestReminderController {
 			mailSenderService.save(reminder.getMailSender());
 			result.setMsg("更新成功!");
 			result.setSuccess(true);
-
+			reminderService.flush();  //提醒也需要进行刷新缓存。
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("更新Id[" + reminder.getId() + "]Reminder信息出错，出错原因为:" + e.getMessage());
@@ -118,7 +128,9 @@ public class RestReminderController {
 
 	}
 
-	@RequestMapping(value = "/delete")
+	@ApiOperation(value = "删除多个邮件提醒")
+	@ApiImplicitParam(name ="ids", value = "多个邮件提醒id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/delete")
 	public WebResult deleteTemplate(String ids, Authentication auth) {
 
 		WebResult result = new WebResult();
@@ -152,7 +164,9 @@ public class RestReminderController {
 		return result;
 	}
 
-	@RequestMapping(value = "/get")
+	@ApiOperation(value = "拿到邮件提醒信息")
+	@ApiImplicitParam(name ="id", value = "邮件提醒id", dataTypeClass = Integer.class, required = true)
+	@RequestMapping(value = "/get",method = {RequestMethod.POST,RequestMethod.GET})
 	public Reminder getTemplate(Integer id) {
 
 		Reminder reminder = null;
@@ -168,7 +182,9 @@ public class RestReminderController {
 		return reminder;
 	}
 
-	@RequestMapping(value = "/pause", method = RequestMethod.POST)
+	@ApiOperation(value = "暂停多个邮件提醒")
+	@ApiImplicitParam(name ="ids", value = "多个邮件提醒id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/pause")
 	/**
 	 * @-=-=暂停正在执行的调度任务
 	 * @param id
@@ -207,8 +223,10 @@ public class RestReminderController {
 
 		return result;
 	}
-
-	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	
+	@ApiOperation(value = "开始多个邮件提醒")
+	@ApiImplicitParam(name ="ids", value = "多个邮件提醒id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/start")
 	/**
 	 * @-=-=开始一个已经暂停了的调度任务
 	 * @param id
@@ -246,12 +264,15 @@ public class RestReminderController {
 		return result;
 	}
 
+	
 	/**
 	 * @-=-=-发送一个测试的邮件到指定的邮箱内
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/run", method = RequestMethod.POST)
+	@ApiOperation(value = "发送多个测试邮件提醒")
+	@ApiImplicitParam(name ="ids", value = "多个邮件提醒id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/run")
 	public WebResult sendTestReminder(String ids) {
 
 		WebResult result = new WebResult();

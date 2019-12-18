@@ -17,13 +17,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cronutils.model.Cron;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.quartz.entity.MailSender;
 import cn.tblack.work.reporter.quartz.entity.Reminder;
 import cn.tblack.work.reporter.quartz.entity.Schedule;
@@ -40,9 +40,15 @@ import cn.tblack.work.reporter.sys.service.SysUserService;
 import cn.tblack.work.reporter.user.util.UserInjectionUtils;
 import cn.tblack.work.reporter.util.FileWriter;
 import cn.tblack.work.reporter.util.WeightsUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "添加定时邮件提醒控制器")
 @RestController
 @RequestMapping("/schedule/email")
+@NeedAnyRole
 public class RestScheduleEmailController {
 
 	private static Logger log = LoggerFactory.getLogger(RestScheduleEmailController.class);
@@ -61,15 +67,16 @@ public class RestScheduleEmailController {
 	@Autowired
 	private UserInjectionUtils userInjectionUtils;
 
-	@RequestMapping(value = "/verify-cron-expression", method = RequestMethod.POST)
+	@ApiOperation(value = "验证某个Cron表达式是否合法")
+	@PostMapping(value = "/verify-cron-expression")
 	/**
-	 * @验证某个Cron表达式是否合法
+	 * @~_~验证某个Cron表达式是否合法
 	 * @param cron
 	 * @return
 	 */
 	public ValidateResult verifyCronExpression(String cron) {
 
-		log.info("开始验证一个Cron表达式:  " + cron);
+//		log.info("开始验证一个Cron表达式:  " + cron);
 
 		ValidateResult result = new ValidateResult(false);
 		try {
@@ -84,7 +91,14 @@ public class RestScheduleEmailController {
 
 		return result;
 	}
-
+	
+	@ApiOperation("添加一个定时邮件提醒")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name =  "mailSender",value = "邮件内容", dataTypeClass = MailSender.class, required =  true),
+		@ApiImplicitParam(name =  "schedule",value = "定时Cron", dataTypeClass = MailSender.class, required =  true),
+		@ApiImplicitParam(name =  "delayCron",value = "延时Cron", dataTypeClass = MailSender.class, required =  false),
+		@ApiImplicitParam(name =  "attachment",value = "附件", dataTypeClass = MailSender.class, required =  false)
+	})
 	@PostMapping(value = "/addReminder")
 	public WebResult addReminder(MailSender mailSender, Schedule schedule, String delayCron,
 			@RequestParam("attachment") MultipartFile file, Authentication auth) {
@@ -153,7 +167,7 @@ public class RestScheduleEmailController {
 			ReminderTask task = new ReminderTask(reminder);
 
 			// 表示的不是延时重复提醒- 那么则无需要创建DelayRemindJob对象
-			if (delayCron == null) {
+			if (delayCron == null || delayCron.isEmpty()) {
 
 				reminderScheduler.addReminderJob(task);
 			} else {

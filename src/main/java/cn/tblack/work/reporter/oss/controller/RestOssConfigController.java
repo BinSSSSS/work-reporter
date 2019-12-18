@@ -7,18 +7,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.OssConfig;
 import cn.tblack.work.reporter.sys.service.OssConfigService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "存储桶配置相关控制器")
 @RestController
 @RequestMapping("/oss/config")
+@NeedAnyRole
 public class RestOssConfigController {
 
 	private static Logger log = LoggerFactory.getLogger(RestOssConfigController.class);
@@ -26,7 +34,8 @@ public class RestOssConfigController {
 	@Autowired
 	private OssConfigService ossConfigService;
 	
-	@RequestMapping(value = "/select-list")
+	@ApiOperation(value = "存储桶配置列表")
+	@RequestMapping(value = "/select-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public List<OssConfig> ossConfigList(){
 		
 		List<OssConfig> configList = null;
@@ -40,8 +49,9 @@ public class RestOssConfigController {
 		
 		return configList;
 	}
-
-	@RequestMapping(value = "/page-list")
+	
+	@ApiOperation(value = "存储桶配置分页列表")
+	@RequestMapping(value = "/page-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public LaYuiPage<OssConfig> getPageList(@RequestParam(name = "page", defaultValue = "1") Integer page,
 			@RequestParam(name = "limit", defaultValue = "10") Integer limit,
 			@RequestParam(name = "searchText", defaultValue = "") String searchText) {
@@ -62,13 +72,15 @@ public class RestOssConfigController {
 		return configPage;
 
 	}
-
-	@RequestMapping(value = "/create")
+	
+	@ApiOperation(value = "创建一个存储桶配置",consumes = "application/json")
+	@ApiImplicitParam(name = "ossConfig", value = "存储桶配置信息", dataTypeClass = OssConfig.class, required = true)
+	@PostMapping(value = "/create")
 	public WebResult createDatabase(@RequestBody OssConfig ossConfig) {
 
 		WebResult result = new WebResult();
 
-		log.info("传递的OssConfig信息为: " + ossConfig);
+//		log.info("传递的OssConfig信息为: " + ossConfig);
 
 		try {
 
@@ -86,12 +98,14 @@ public class RestOssConfigController {
 		return result;
 	}
 
-	@RequestMapping(value = "/update")
+	@ApiOperation(value = "更新一个存储桶配置",consumes = "application/json")
+	@ApiImplicitParam(name = "ossConfig", value = "存储桶配置信息", dataTypeClass = OssConfig.class, required = true)
+	@PostMapping(value = "/update")
 	public WebResult updateTemplate(@RequestBody OssConfig ossConfig) {
 
 		WebResult result = new WebResult();
 
-		log.info("传递的ossConfig信息为: " + ossConfig);
+//		log.info("传递的ossConfig信息为: " + ossConfig);
 		try {
 
 			OssConfig orgGenDb = ossConfigService.findById(ossConfig.getId());
@@ -119,7 +133,9 @@ public class RestOssConfigController {
 
 	}
 
-	@RequestMapping(value = "/delete")
+	@ApiOperation(value = "删除多个存储桶配置")
+	@ApiImplicitParam(name ="ids", value = "多个存储桶配置id", dataTypeClass = String.class, required = true)
+	@PostMapping(value = "/delete")
 	public WebResult deleteTemplate(String ids) {
 
 		WebResult result = new WebResult();
@@ -146,7 +162,9 @@ public class RestOssConfigController {
 		return result;
 	}
 
-	@RequestMapping(value = "/get")
+	@ApiOperation(value = "拿到存储桶配置信息")
+	@ApiImplicitParam(name ="id", value = "存储桶配置id", dataTypeClass = String.class, required = true)
+	@RequestMapping(value = "/get",method = {RequestMethod.POST,RequestMethod.GET})
 	public OssConfig getTemplate(Integer id) {
 
 		OssConfig ossConfig = null;

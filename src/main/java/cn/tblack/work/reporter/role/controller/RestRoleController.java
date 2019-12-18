@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.model.BatchAuthorize;
 import cn.tblack.work.reporter.result.WebResult;
 import cn.tblack.work.reporter.sys.entity.SysResRole;
@@ -22,10 +24,15 @@ import cn.tblack.work.reporter.sys.service.SysResRoleService;
 import cn.tblack.work.reporter.sys.service.SysResourcesService;
 import cn.tblack.work.reporter.sys.service.SysRoleService;
 import cn.tblack.work.reporter.util.DatabaseTableIdGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags ="角色管理控制器")
 @RestController
 //@HasAdminRole
 @RequestMapping("/role")
+@NeedAnyRole
 public class RestRoleController {
 
 	private static Logger log = LoggerFactory.getLogger(RestRoleController.class);
@@ -39,7 +46,8 @@ public class RestRoleController {
 	@Autowired
 	private SysResRoleService resRoleService;
 	
-	@RequestMapping(value = "/all-role")
+	@ApiOperation(value = "拿到所有角色列表")
+	@RequestMapping(value = "/all-role",method = {RequestMethod.POST,RequestMethod.GET})
 	public List<SysRole> getRoleList() {
 
 		List<SysRole> list = null;
@@ -59,6 +67,8 @@ public class RestRoleController {
 	 * @param ids
 	 * @return
 	 */
+	@ApiOperation(value = "删除多个角色")
+	@ApiImplicitParam(name ="ids", value = "多个角色id", dataTypeClass = String.class, required = true)
 	@PostMapping(value = "/delete")
 	public WebResult deleteRole(String ids) {
 
@@ -79,6 +89,8 @@ public class RestRoleController {
 		try {
 			for (String id : delIds) {
 				try {
+					if(id.equals("1"))
+						continue;
 					roleService.deleteById(id);
 				} catch (Exception e) {
 					log.info("删除角色失败~角色id为: " + id + "，错误信息为: " + e.getMessage());
@@ -104,7 +116,9 @@ public class RestRoleController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/get")
+	@ApiOperation(value = "拿到角色信息")
+	@ApiImplicitParam(name ="id", value = "角色id", dataTypeClass = String.class, required = true)
+	@RequestMapping(value = "/get",method = {RequestMethod.POST,RequestMethod.GET})
 	public SysRole getRole(String id) {
 		
 		SysRole role = null ;
@@ -129,7 +143,8 @@ public class RestRoleController {
 		
 		return role;
 	}
-	
+	@ApiOperation(value = "更新一个角色",consumes = "application/json")
+	@ApiImplicitParam(name = "sysRole", value = "角色信息", dataTypeClass = SysRole.class, required = true)
 	@PostMapping(value = "/update")
 	public WebResult updateRole(@RequestBody SysRole sysRole) {
 		
@@ -195,6 +210,8 @@ public class RestRoleController {
 	 * @param batchAuth
 	 * @return
 	 */
+	@ApiOperation(value = "批量授权操作",consumes =  "application/json")
+	@ApiImplicitParam(name ="batchAuth", value = "授权对象", dataTypeClass = BatchAuthorize.class, required = true)
 	@PostMapping(value = "/batch-authorize")
 	public WebResult batchAuthorize(@RequestBody BatchAuthorize batchAuth) {
 		WebResult result = new WebResult();
@@ -258,7 +275,9 @@ public class RestRoleController {
 	 * @param role
 	 * @return
 	 */
-	@RequestMapping(value = "/insert")
+	@ApiOperation(value = "创建一个角色",consumes = "application/json")
+	@ApiImplicitParam(name = "role", value = "角色信息", dataTypeClass = SysRole.class, required = true)
+	@PostMapping(value = "/insert")
 	public WebResult insertRole(@RequestBody SysRole role) {
 		
 		WebResult result =  new WebResult();
@@ -292,7 +311,8 @@ public class RestRoleController {
 		return result;
 	}
 	
-	@RequestMapping(value = "/role-list")
+	@ApiOperation(value = "角色信息列表")
+	@RequestMapping(value = "/role-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public List<SysRole> roleList(@RequestParam(name = "roleName",defaultValue = "")String roleName) {
 		
 //		log.info("传递的角色名字为: " +  roleName);

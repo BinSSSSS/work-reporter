@@ -10,10 +10,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
 import cn.tblack.work.reporter.oss.uploader.QCloudOssUploader;
 import cn.tblack.work.reporter.page.LaYuiPage;
 import cn.tblack.work.reporter.properties.WebConfigProperties;
@@ -23,9 +25,15 @@ import cn.tblack.work.reporter.sys.entity.SysOss;
 import cn.tblack.work.reporter.sys.service.OssConfigService;
 import cn.tblack.work.reporter.sys.service.SysOssService;
 import cn.tblack.work.reporter.util.FileWriter;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "存储桶资源相关控制器")
 @RestController
 @RequestMapping("/oss")
+@NeedAnyRole
 public class RestOssController {
 
 	private static Logger log = LoggerFactory.getLogger(RestOssController.class);
@@ -35,8 +43,9 @@ public class RestOssController {
 
 	@Autowired
 	private OssConfigService ossConfigService;
-
-	@RequestMapping(value = "/page-list")
+	
+	@ApiOperation("存储桶资源分页列表")
+	@RequestMapping(value = "/page-list",method = {RequestMethod.POST,RequestMethod.GET})
 	public LaYuiPage<SysOss> getPageList(@RequestParam(name = "page", defaultValue = "1") Integer page,
 			@RequestParam(name = "limit", defaultValue = "10") Integer limit) {
 
@@ -56,13 +65,18 @@ public class RestOssController {
 		return ossLPage;
 
 	}
-
+	
+	@ApiOperation(value = "文件的上传")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "configId", value = "存储桶配置id", dataTypeClass =  Integer.class, required = true),
+		@ApiImplicitParam(name = "file", value = "上传文件", dataTypeClass =  MultipartFile.class, required = true)
+	})
 	@PostMapping(value = "/upload")
 	public WebResult uploadFileToOss(Integer configId, @RequestParam("file") MultipartFile file) {
 
 		WebResult result = new WebResult();
 
-		log.info("上传的文件名为:  " + file.getOriginalFilename() + ",配置id为: " + configId);
+//		log.info("上传的文件名为:  " + file.getOriginalFilename() + ",配置id为: " + configId);
 
 		try {
 
@@ -126,7 +140,9 @@ public class RestOssController {
 		return result;
 	}
 	
-	@RequestMapping("/delete")
+	@ApiOperation(value = "删除多个存储资源")
+	@ApiImplicitParam(name ="ids", value = "多个存储资源id", dataTypeClass = String.class, required = true)
+	@PostMapping("/delete")
 	public WebResult deleteOssResources(String ids) {
 		
 		WebResult result =  new WebResult();

@@ -6,17 +6,23 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import cn.tblack.work.reporter.annotation.HasAnyRole;
+import cn.tblack.work.reporter.annotation.NeedAnyRole;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+@Api(tags = "账户相关视图控制器")
 @Controller
 @RequestMapping("/account")
-@HasAnyRole
+@NeedAnyRole
 public class AccountController {
 
 	
-	@RequestMapping("/renew-password.html")
+	@ApiOperation(value = "修改密码视图")
+	@GetMapping("/renew-password.html")
 	public String accountSettings() {
 		
 		return "/index/account";
@@ -26,7 +32,8 @@ public class AccountController {
 	 * @=-=注销操作。
 	 * @return
 	 */
-	@RequestMapping("/logout")
+	@ApiOperation(value = "注销操作")
+	@RequestMapping(value = "/logout",method = {RequestMethod.GET,RequestMethod.POST})
 	public String logout(Authentication auth, HttpServletRequest request , HttpServletResponse response) {
 		
 		//在SpringSecurity中对该用户做注销操作
