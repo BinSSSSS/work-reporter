@@ -89,8 +89,8 @@ var vm = new Vue({
                                 minWidth : 100
                             } ] ],
                     page : true, // 开启分页
-                    // request : laypagerequest,
-                    // response : laypageresponse,
+                    method: 'post',
+                    request : LayPagePostRequest,
                     where : $("#searchForm").serializeJSON()
                 });
             });

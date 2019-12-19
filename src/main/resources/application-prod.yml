@@ -56,7 +56,12 @@ spring:
   resources:
     static-locations:
     - classpath:/static/
-          
+    cache:
+      cachecontrol:
+        max-age:
+          600
+        cache-public: true     
+        no-cache: false   
   # jpa 配置
   jpa:
     hibernate:

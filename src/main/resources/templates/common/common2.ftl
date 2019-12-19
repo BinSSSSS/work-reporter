@@ -1,6 +1,6 @@
  <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>云报告</title>
+  <title>工作云报告</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -65,15 +65,15 @@
 //项目目录
 var rootPath = "";
 //layui分页插件参数常量
-var laypagerequest={  pageName: 'curPage' , limitName: "pageSize", method: 'post'};
-var laypagerequestget={  pageName: 'curPage' , limitName: "pageSize", method: 'get'};
-var laypageresponse= {
+var LayPagePostRequest ={  pageName: 'page' , limitName: "limit", method: 'post'};
+var LayPageGetRequest ={  pageName: 'page' , limitName: "limit", method: 'get'};
+var LayPageResponse = {
                         statusName: 'code' , // 数据状态的字段名称，默认：code                      
                         statusCode: 200,    //状态码
                         msgName: "msg",     //附加消息
-                        limitName: 'pageSize', // 每页数据量的参数名，默认：limit                        
-                        countName: 'totals', // 数据总数的字段名称，默认：count                        
-                        dataName: 'result' // 数据列表的字段名称，默认：data
+                        limitName: 'limit', // 每页数据量的参数名，默认：limit                        
+                        countName: 'count', // 数据总数的字段名称，默认：count                        
+                        dataName: 'data' // 数据列表的字段名称，默认：data
                     }
 </script>
 <script type="text/javascript" src="/common/common.js"></script>

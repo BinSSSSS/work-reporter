@@ -204,10 +204,9 @@ var vm = new Vue({
                                 	return null;
                                 }
                             } ] ],
-                    page : true
-                    //, // 开启分页
-//                    request : laypagerequest,
-//                    response : laypageresponse,
+                    page : true, // 开启分页
+                    method: 'post',
+                    request : LayPagePostRequest
 //                 where : $("#searchForm").serializeJSON()
                 });
             });

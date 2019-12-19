@@ -126,13 +126,14 @@ var vm = new Vue({
         },
         reload: function() {
             vm.showList = true;
-
+//            console.log(LayPagePostRequest);
             layui.use('table',
                 function() {
                     var table = layui.table;
                     table.render({
                         elem: '#usertable', // 选定是那个DIV
                         url: '/user/user-list',
+                        method: 'post',
                         page: true ,// 开启分页
                         cols: [[
                             {
@@ -176,6 +177,7 @@ var vm = new Vue({
                                 }
                             }
                         ]],
+                        request: LayPagePostRequest,
                         // 查询条件
                         where:$("#searchForm").serializeJSON()
                     });

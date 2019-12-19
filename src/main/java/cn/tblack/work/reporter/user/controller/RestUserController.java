@@ -269,7 +269,7 @@ public class RestUserController {
 		LaYuiPage<SysUser> usernamePage = userService.findAllByUsername(searchText, pageable);
 		Long count = userService.count();
 		// 组合多个查询结果
-		List<SysUser> usernameList = usernamePage.getResult();
+		List<SysUser> usernameList = usernamePage.getData();
 		List<SysUser> userList = new ArrayList<>();
 		// 第一次查询到所有的数据，之后无需要整合
 		if (Long.valueOf(usernamePage.getCount()) == count) {
@@ -277,7 +277,7 @@ public class RestUserController {
 		} else {
 			LaYuiPage<SysUser> phoneNumPage = userService.findAllByPhoneNum(searchText, pageable);
 
-			List<SysUser> phoneList = phoneNumPage.getResult();
+			List<SysUser> phoneList = phoneNumPage.getData();
 
 			// 如果通过手机号码查询到了数据库内所有数据，无需要再次整合
 			if (phoneList.size() == count) {

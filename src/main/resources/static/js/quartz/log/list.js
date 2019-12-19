@@ -54,8 +54,8 @@ var vm = new Vue({
                                 width : 100
                             } ] ],
                     page : true, // 开启分页
-//                    request : laypagerequest,
-//                    response : laypageresponse
+                    method: 'post',
+                    request : LayPagePostRequest
                 // ,
                 // where : $("#searchForm").serializeJSON()
                 });

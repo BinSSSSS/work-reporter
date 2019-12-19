@@ -14,34 +14,34 @@ import org.springframework.data.domain.Page;
  */
 public class LaYuiPage<T> implements Serializable{
 
+	/** 默认每一页的分页大小，如果需要自己定义 使用page.setpageSize(分页大小)即可 **/
+	public static Integer DEFAULT_PAGE_SIZE = 10;
 
 	private static final long serialVersionUID = 1L;
-
+	
+	/**数据量大小*/
 	private Integer count;
 
 	private String msg = "";
 
 	private Integer code = 0;
-
+	
+	/**查询分页结果数据*/
 	private List<T> data;
 
-	/** 默认每一页的分页大小，如果需要自己定义 使用page.setpageSize(分页大小)即可 **/
-	public static Integer DEFAULT_PAGE_SIZE = 10;
 	/** 对象获取的开始位置，应该总是从1开始 */
 	private Integer startIndex;
+	
 	/** 每页获取的页大小，默认是10 **/
-	private Integer pageSize = DEFAULT_PAGE_SIZE;
-	/** 总记录数 记录一共有多少数据 **/
-	private Integer totals;
-	/** 应该总是从1开始 */
-	private Integer curPage = 1;
-	/** 查询的结果 查询后的每一页的分页结果 */
-	private List<T> result;
-	/** 分页代码 */
-	private String paginate;
-
+	private Integer limit = DEFAULT_PAGE_SIZE;
+	
+	/** 当前的页数下标 */
+	private Integer page = 1;
+	
+	/**总页数*/
 	private Integer totalPages;
 
+	
 	public LaYuiPage() {
 		super();
 	}
@@ -49,14 +49,12 @@ public class LaYuiPage<T> implements Serializable{
 	public LaYuiPage(Page<T> pageImpl) {
 		this.data = pageImpl.getContent();
 		this.count = data.size();
-
 		this.startIndex = 0;
-		this.curPage = pageImpl.getPageable().getPageNumber();
-		this.totals = count;
-		this.pageSize = pageImpl.getPageable().getPageSize();
-		this.result = data;
+		this.page = pageImpl.getPageable().getPageNumber();
+		this.limit = pageImpl.getPageable().getPageSize();
+		
 
-		this.totalPages = this.count % this.pageSize == 0 ? this.count / this.pageSize : this.count / this.pageSize + 1;
+		this.totalPages = this.count % this.limit == 0 ? this.count / this.limit : this.count / this.limit + 1;
 	}
 
 	public Integer getCount() {
@@ -99,44 +97,20 @@ public class LaYuiPage<T> implements Serializable{
 		this.startIndex = startIndex;
 	}
 
-	public Integer getPageSize() {
-		return pageSize;
+	public Integer getLimit() {
+		return limit;
 	}
 
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
+	public void setLimit(Integer limit) {
+		this.limit = limit;
 	}
 
-	public Integer getTotals() {
-		return totals;
+	public Integer getPage() {
+		return page;
 	}
 
-	public void setTotals(Integer totals) {
-		this.totals = totals;
-	}
-
-	public Integer getCurPage() {
-		return curPage;
-	}
-
-	public void setCurPage(Integer curPage) {
-		this.curPage = curPage;
-	}
-
-	public List<T> getResult() {
-		return result;
-	}
-
-	public void setResult(List<T> result) {
-		this.result = result;
-	}
-
-	public String getPaginate() {
-		return paginate;
-	}
-
-	public void setPaginate(String paginate) {
-		this.paginate = paginate;
+	public void setPage(Integer page) {
+		this.page = page;
 	}
 
 	public Integer getTotalPages() {
@@ -150,9 +124,8 @@ public class LaYuiPage<T> implements Serializable{
 	@Override
 	public String toString() {
 		return "LaYuiPage [count=" + count + ", msg=" + msg + ", code=" + code + ", data=" + data + ", startIndex="
-				+ startIndex + ", pageSize=" + pageSize + ", totals=" + totals + ", curPage=" + curPage + ", result="
-				+ result + ", paginate=" + paginate + ", totalPages=" + totalPages + "]";
+				+ startIndex + ", limit=" + limit + ", page=" + page + ", totalPages=" + totalPages + "]";
 	}
-
+	
 	
 }

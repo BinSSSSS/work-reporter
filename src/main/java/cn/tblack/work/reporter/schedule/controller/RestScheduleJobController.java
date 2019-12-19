@@ -32,8 +32,8 @@ public class RestScheduleJobController {
 	
 	@ApiOperation("定时任务分页列表")
 	@RequestMapping(value = "/page-list",method = {RequestMethod.POST,RequestMethod.GET})
-	public LaYuiPage<ScheduleJob> getPageList(@RequestParam(name = "pageSize",defaultValue = "10") Integer pageSize,
-			@RequestParam(name = "curPage",defaultValue = "1")Integer curPage){
+	public LaYuiPage<ScheduleJob> getPageList(@RequestParam(name = "limit",defaultValue = "10") Integer pageSize,
+			@RequestParam(name = "page",defaultValue = "1")Integer curPage){
 		
 		LaYuiPage<ScheduleJob> scheduleJobLPage = null;
 		

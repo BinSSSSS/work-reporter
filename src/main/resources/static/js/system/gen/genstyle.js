@@ -121,8 +121,8 @@ var vm = new Vue({
 						}
 					} ] ],
 					page : true, // 开启分页
-//					request : laypagerequest,
-//					response : laypageresponse,
+					method: 'post',
+					request : LayPagePostRequest,
 					where : $("#searchForm").serializeJSON()
 				});
 			});

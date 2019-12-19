@@ -1,0 +1,242 @@
+			蓝梦教育管理系统表设计
+			
+	1. bd_user 用户表
+		username
+		password
+		
+	2. bd_role  角色表
+		role_key
+	
+	3. bd_resource 资源表
+		url		资源URL
+		type	资源类型 (1.菜单、 2. 目录 、 3. 按钮 )
+		name 	资源名
+		description 资源描述
+		
+	4. classroom 教室表
+		name 教室名
+		room_no	教室编号
+		teaching_building  所属教学楼
+		description
+	
+	5. school_class  学校班级
+		name 班级名
+		scholastic_year 学年制为多少
+		student_number 班级人数
+//		head_teacher_id  班主任id
+		enrollment_year 入学年份
+		slogan 班级口号
+		major_id 班级专业
+		description 班级描述
+			
+			
+	6. major 专业
+		name 专业名称
+		cost 专业费用
+		description 专业描述
+		[负责人id] ---
+		
+	7. student_info 学生个人信息
+		name 真实姓名
+		id_number 身份证id
+		phone	手机号码
+		nationality 民族
+		political_status 政治面貌
+		gender 性别
+		age 年龄
+		birthday 出生年月
+		family_address 家庭住址
+		self_picture  本人图片
+		admission_time 入学时间
+		
+		
+	8. family_member 家庭成员表
+		name 姓名
+		relation_student_id 关联的学生id
+		family_relations 家庭关系
+		phone 手机号码
+		job 工作
+	
+	9. subject 科目表
+		name 科目名
+		description 科目描述
+		
+	10. curriculum 全部课程表
+		subject_id 科目id
+		teacher_id 授课老师id
+		classroom_id 授课班级id
+		lecture_start_time 授课开始时间
+		lecture_number 总共授课多少节
+		lecture_end_time  授课结束时间
+		description 课程描述
+		avg_score 课程平均评价分(课程结束之后统计计算)
+	
+	11.teacher 教师表
+		teacher_no 工号
+		name 教师姓名
+		gender 性别
+		age 年龄
+		birthday 出生年月
+		id_number 身份证id
+		social_security_no 社保号
+		hiredate 入职时间
+		working_year 在职年份
+		position 职位
+		self_picture
+		pid 上级领导id
+		
+	12. course_schedule 课程安排表
+		subject_id 科目id
+		teacher_id 授课老师id
+		classroom_id 授课班级id
+		lectures_count 连续授课的节数
+		lecture_start_time 上课开始时间
+		lecture_end_time 上课结束时间
+		lecture_index 当前进行到多少节
+		
+	13. student_attendance 学生考勤表
+		student_id 学生id
+		signed_count 签到次数
+		min_signed_count 最少签到次数
+		full_signed_count 完整签到次数
+		attendance_precentage 出勤百分比
+		absent_count 请假次数
+		
+	14. teacher_attendance 教师考勤表
+		teacher_id 教师id
+		signed_count 签到次数
+		min_signed_count 最少签到次数
+		full_signed_count 完整签到次数
+		attendance_precentage 出勤百分比
+		absent_count 请假次数
+		
+	15. student_signed 学生签到表
+		student_id 学生id
+		signed_time 签到时间
+		attendance_id 考勤表id
+		signed_class_number 签到的课节
+		signed_course_id 签到的课程id
+	
+	16. teacher_signed 老师签到表
+		teacher_id 学生id
+		signed_time 签到时间
+		attendance_id 考勤表id
+		signed_class_number 签到的课节
+		signed_course_id 签到的课程id
+	
+	17. student_absent 学生请假表
+		student_id 学生id
+		absent_type 请假类型(事假、病假)
+		absent_time 请假时间
+		absent_end_time 请假结束时间
+		absent_day_duration 请假时长(天)
+		absent_cause 请假理由
+		approval_teacher_id 批准老师id
+		
+	18. teacher_absent 老师请假表
+		student_id 老师id
+		absent_type 请假类型(事假、病假)
+		absent_time 请假时间
+		absent_end_time 请假结束时间
+		absent_day_duration 请假时长(天)
+		absent_cause 请假理由
+		approval_pid 批准领导id
+		
+		
+	19. school_timetable 学校作息时间表
+		season_type 节令类型（如学校有夏令、冬令等不同的作息时间)
+		start_time 开始时间
+		end_time 结束时间
+		title 作息时间标题
+		description 描述信息
+		
+	20. subject_feedback 课程反馈表
+		subject_id 科目id
+		teacher_id 授课老师id
+		classroom_id 授课班级
+		content 反馈信息
+		score 课程评分
+		
+	21. student_status 学生学籍表
+		student_id 学生id
+		academic_year 学年为第几年
+		educational 学历(小学1-6、初中1-3、高中1-3,大一至大四,硕士..)
+		
+	22. student_credit 学生学分表
+		student_id 学生id
+		credit 学分
+	
+	23. student_punishment 学生处分表
+		student_id 学生id
+		punishment_type 处分类型
+		punishment_cause 处分原因
+		description 处分描述
+		
+	24. student_works 学生作品
+		student_id 学生id
+		title 作品标题
+		works_url 作品链接
+		
+	25. examination  试题表
+		subject_id 所属科目
+		content 试题内容
+		answer 试题答案
+		type 试题类型 (单择题、填空题、判断题、多选题等)
+		is_deprecated 是否被弃用
+		
+	25. examination_options 试题选项
+		examination_id 试题id
+		content 选项内容
+		
+	26. student_garde 学生成绩表
+		student_id 学生id
+		examination_id 试题id
+		garde 学生成绩
+		avg_garde 平均分
+		class_rank 学生成绩排名
+		school_rank 学生学校排名
+		
+		
+	27. article 文章表
+		author  作者名
+		title 标题
+		content 内容
+		post_time 发布时间
+		last_change_time 上次更改时间
+		description 描述
+		
+		
+	28. comment 评论表
+		username 评论用户名
+		content 评论内容
+		post_time 评论时间
+		pid 回复评论id。如果为空表示本评论就是父级评论
+	
+	
+	29. article_theme 文章主题表
+		theme_id 主题id
+		article_id 文章id
+		
+	30. theme_category 文章类别
+		category_id 类别id
+		theme_id 主题id
+		
+	31. category 类别
+		name  类别名称
+		description 类别描述 
+		
+	32. theme 主题
+		name 主题名
+		description 主题描述
+		
+		
+	33. teacher_title 教师职称
+		teacher_id 教师id
+		title 职称
+		selection_time 评选时间
+		last_title 上次职称
+		description 描述
+		
+	34. head_teacher 班主任
+		classroom_id 教室id  
+		teacher_id 教师id
