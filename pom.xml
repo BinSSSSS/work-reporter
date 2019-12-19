@@ -28,7 +28,7 @@
 		<kaptcha.version>2.3.2</kaptcha.version>
 		<velocity.version>1.7</velocity.version>
 		<velocity-tool.version>2.0</velocity-tool.version>
-		<hutool-all-version>4.0.5</hutool-all-version>
+		<hutool-all-version>4.1.12</hutool-all-version>
 		<zxing.version>3.3.3</zxing.version>
 		<interceptor.version>1.2</interceptor.version>
 		<cos_api.version>5.6.8</cos_api.version>
