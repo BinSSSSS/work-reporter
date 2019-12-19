@@ -20,7 +20,10 @@
 	<li>6.通过数据库表一键生成代码</li>
 	<li>7.定时邮件提醒</li>
 	<li>8.本地上传文件到存储桶</li>
+	<li>9.Redis 缓存</li>
 	<li>....更多完整功能开发中</li>
 </ul>
 <p>注意：第三方QQ登录的接口需要自己申请QQ互联，并提供AppId和AppSecret</p>
+
+<p><span><a target="_blank" href="http://tblack.cn:7777">项目演示地址</a></span></p>
 
