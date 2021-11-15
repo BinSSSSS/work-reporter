@@ -32,7 +32,7 @@
 		<zxing.version>3.3.3</zxing.version>
 		<interceptor.version>1.2</interceptor.version>
 		<cos_api.version>5.6.8</cos_api.version>
-		<cron-utils.version>9.0.1</cron-utils.version>
+		<cron-utils.version>9.1.6</cron-utils.version>
 		<cloud-config.version>2.2.0.RELEASE</cloud-config.version>
 	</properties>
 
