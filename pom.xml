@@ -22,7 +22,7 @@
 		<social_starter.version>1.5.22.RELEASE</social_starter.version>
 		<swagger_starter.version>1.9.0.RELEASE</swagger_starter.version>
 		<javamelody_starter.version>1.80.0</javamelody_starter.version>
-		<fastjson.version>1.2.62</fastjson.version>
+		<fastjson.version>1.2.83</fastjson.version>
 		<beanutils.version>1.9.3</beanutils.version>
 		<poi.version>4.1.0</poi.version>
 		<kaptcha.version>2.3.2</kaptcha.version>
